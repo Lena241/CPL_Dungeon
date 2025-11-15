@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import level.BlocklyLevel;
+import systems.InterpreterSystem;
 
 /**
  * Controls communication between the Blockly frontend and the dungeon game. Provides HTTP endpoints
@@ -250,11 +251,16 @@ public class Server {
     // Start code execution
     interruptExecution = false;
     try {
-      if (sleepAfterEachLine >= 0) {
-        BlocklyCodeRunner.instance().executeJavaCode(text, sleepAfterEachLine);
-      } else {
-        BlocklyCodeRunner.instance().executeJavaCode(text);
-      }
+      int finalSleepAfterEachLine = sleepAfterEachLine;
+      Game.system(
+          InterpreterSystem.class,
+          interpreterSystem -> {
+            if (finalSleepAfterEachLine >= 0) {
+              interpreterSystem.sendCode(text, finalSleepAfterEachLine);
+            } else {
+              interpreterSystem.sendCode(text);
+            }
+          });
 
       // Wait 1 second to check for errors or completion
       try {

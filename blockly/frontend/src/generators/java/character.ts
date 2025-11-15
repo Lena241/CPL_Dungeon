@@ -5,14 +5,14 @@ export function move(
   _block: Blockly.Block,
   _generator: Blockly.Generator
 ) {
-  return "hero.move();";
+  return "gehe";
 }
 
 export function rotate(
   block: Blockly.Block,
   generator: Blockly.Generator
 ) {
-  const ALLOWED_DIRECTIONS = ["Direction.LEFT", "Direction.RIGHT"]
+  const ALLOWED_DIRECTIONS = ["links", "rechts"]
   const dir = generator.valueToCode(block, "DIRECTION", Order.NONE);
   if (dir === "") return "";
   // if not allowed, shows error and disconnects the input
@@ -22,5 +22,5 @@ export function rotate(
     return "";
   }
   block.setWarningText(null);
-  return "hero.rotate(" + dir + ");";
+  return "drehe(" + dir+")";
 }

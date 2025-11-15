@@ -19,14 +19,14 @@ export function direction_left(
   _block: Blockly.Block,
   _generator: Blockly.Generator
 ) {
-  return ["Direction.LEFT", Order.ATOMIC];
+  return ["links", Order.ATOMIC];
 }
 
 export function direction_right(
   _block: Blockly.Block,
   _generator: Blockly.Generator
 ) {
-  return ["Direction.RIGHT", Order.ATOMIC];
+  return ["rechts", Order.ATOMIC];
 }
 
 export function direction_here(

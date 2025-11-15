@@ -21,8 +21,8 @@ import java.util.function.Consumer;
  */
 public final class PreRunConfiguration {
 
-  private static int WINDOW_WIDTH = 1280;
-  private static int WINDOW_HEIGHT = 720;
+  private static int WINDOW_WIDTH = 640;
+  private static int WINDOW_HEIGHT = 480;
   private static int FRAME_RATE = 30;
   private static boolean FULL_SCREEN = false;
 
