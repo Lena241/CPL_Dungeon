@@ -1,7 +1,7 @@
 package server;
 
 import client.Client;
-import coderunner.BlocklyCodeRunner;
+import coderunner.DslCodeRunner;
 import com.badlogic.gdx.Gdx;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
@@ -102,7 +102,7 @@ public class Server {
    * @throws IOException If an error occurs while sending the response
    */
   private void handleResetRequest(HttpExchange exchange) throws IOException {
-    BlocklyCodeRunner.instance().stopCode();
+    DslCodeRunner.instance().stopCode();
     // Reset values
     interruptExecution = true;
     Client.restart();
@@ -234,7 +234,7 @@ public class Server {
     }
 
     // Handle normal code execution request
-    if (BlocklyCodeRunner.instance().isCodeRunning()) {
+    if (DslCodeRunner.instance().isCodeRunning()) {
       String response = "Another code execution is already running. Please stop it first.";
       exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
       exchange.sendResponseHeaders(400, response.getBytes().length);
@@ -246,14 +246,15 @@ public class Server {
 
     InputStream inStream = exchange.getRequestBody();
     String text = new String(inStream.readAllBytes(), StandardCharsets.UTF_8);
+    System.out.println(text);
 
     // Start code execution
     interruptExecution = false;
     try {
       if (sleepAfterEachLine >= 0) {
-        BlocklyCodeRunner.instance().executeJavaCode(text, sleepAfterEachLine);
+        DslCodeRunner.instance().executeDslCode(text, sleepAfterEachLine);
       } else {
-        BlocklyCodeRunner.instance().executeJavaCode(text);
+        DslCodeRunner.instance().executeDslCode(text);
       }
 
       // Wait 1 second to check for errors or completion
@@ -269,8 +270,8 @@ public class Server {
       if (interruptExecution) {
         response = errorMsg.isEmpty() ? "Code execution interrupted" : "Error: " + errorMsg;
         statusCode = 400;
-        BlocklyCodeRunner.instance().stopCode();
-      } else if (!BlocklyCodeRunner.instance().isCodeRunning()) {
+        DslCodeRunner.instance().stopCode();
+      } else if (!DslCodeRunner.instance().isCodeRunning()) {
         // Code completed execution within 1 second
         response = "OK - Code executed successfully";
         statusCode = 200;
@@ -294,7 +295,7 @@ public class Server {
       OutputStream os = exchange.getResponseBody();
       os.write(response.getBytes());
       os.close();
-      BlocklyCodeRunner.instance().stopCode();
+      DslCodeRunner.instance().stopCode();
     }
   }
 
@@ -308,8 +309,8 @@ public class Server {
     String response;
     int statusCode = 200;
 
-    if (BlocklyCodeRunner.instance().isCodeRunning()) {
-      BlocklyCodeRunner.instance().stopCode();
+    if (DslCodeRunner.instance().isCodeRunning()) {
+      DslCodeRunner.instance().stopCode();
       interruptExecution = true;
       response = "Code execution stopped";
     } else {
@@ -353,7 +354,7 @@ public class Server {
    */
   private void handleStatusRequest(HttpExchange exchange) throws IOException {
     String response;
-    if (BlocklyCodeRunner.instance().isCodeRunning()) {
+    if (DslCodeRunner.instance().isCodeRunning()) {
       response = "running";
     } else {
       response = "completed";
@@ -372,7 +373,7 @@ public class Server {
    * dungeon.
    */
   public void clearGlobalValues() {
-    BlocklyCodeRunner.instance().stopCode();
+    DslCodeRunner.instance().stopCode();
 
     // Reset values
     interruptExecution = false;

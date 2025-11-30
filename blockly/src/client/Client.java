@@ -1,6 +1,6 @@
 package client;
 
-import coderunner.BlocklyCodeRunner;
+import coderunner.DslCodeRunner;
 import com.sun.net.httpserver.HttpServer;
 import components.AmmunitionComponent;
 import contrib.crafting.Crafting;
@@ -83,7 +83,7 @@ public class Client {
       if (httpServer != null) {
         httpServer.stop(0);
       }
-      BlocklyCodeRunner.instance().stopCode();
+      DslCodeRunner.instance().stopCode();
     }
   }
 
@@ -133,7 +133,7 @@ public class Client {
   private static void onLevelLoad() {
     Game.userOnLevelLoad(
         (firstLoad) -> {
-          BlocklyCodeRunner.instance().stopCode();
+          DslCodeRunner.instance().stopCode();
           Game.system(
               BlocklyCommandExecuteSystem.class,
               s -> {
@@ -245,7 +245,7 @@ public class Client {
       Server.waitDelta(); // wait for the next tick to execute the restart
       return;
     }
-    BlocklyCodeRunner.instance().stopCode();
+    DslCodeRunner.instance().stopCode();
     Game.removeAllEntities();
     Game.system(PositionSystem.class, System::stop);
     Game.system(BlocklyCommandExecuteSystem.class, s -> s.clear());

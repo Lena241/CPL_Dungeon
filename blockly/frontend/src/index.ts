@@ -1,7 +1,7 @@
 import * as Blockly from "blockly";
 import * as De from "blockly/msg/de";
 import {blocks} from "./blocks/dungeon.ts";
-import {javaGenerator} from "./generators/java.ts";
+import {dungeonDslGenerator} from "./generators/dungeon_dsl.ts";
 import {load, save} from "./serialization.ts";
 import {toolbox} from "./toolbox.ts";
 import {config} from "./config.ts";
@@ -90,7 +90,7 @@ levelSelector.addEventListener("levelChanged", (event) => {
 // In a real application, you probably shouldn't use `eval`.
 let code = "";
 const updateCodeDiv = () => {
-  code = javaGenerator.workspaceToCode(Blockly.getMainWorkspace());
+  code = dungeonDslGenerator.workspaceToCode(Blockly.getMainWorkspace());
   if (codeDiv) {
     codeDiv.textContent = code;
   }
