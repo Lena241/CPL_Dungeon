@@ -2,6 +2,9 @@ package coderunner;
 
 import core.Game;
 import core.utils.logging.DungeonLogger;
+import dsl.DungeonDslParserFacade;
+import dsl.Program;
+import dsl.ScriptInterpreter;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import systems.BlocklyCommandExecuteSystem;
@@ -32,14 +35,16 @@ public class DslCodeRunner {
     stopCode();
     codeRunning.set(true);
 
-    VerySimpleDslRunner runner = new VerySimpleDslRunner();
+    DungeonDslParserFacade parserFacade = new DungeonDslParserFacade();
+    Program program = parserFacade.parse(code);
+    ScriptInterpreter interpreter = new ScriptInterpreter(sleepAfterEachLineMillis);
 
     executor = Executors.newSingleThreadExecutor();
     currentExecution =
       executor.submit(
         () -> {
           try {
-            runner.execute(code, sleepAfterEachLineMillis);
+            interpreter.run(program);
           } catch (RuntimeException e) {
             LOGGER.warn("DSL execution error: " + e.getMessage(), e);
             throw e;
