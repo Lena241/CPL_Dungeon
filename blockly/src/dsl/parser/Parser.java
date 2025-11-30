@@ -2,6 +2,7 @@ package dsl.parser;
 
 import dsl.lexer.*;
 import dsl.ast.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,21 +23,47 @@ public class Parser {
     current = lexer.nextToken();
   }
 
-  public List<CommandNode> parseProgram() {
-    List<CommandNode> commands = new ArrayList<>();
+  public List<AstNode> parseProgram() {
+    List<AstNode> nodes = new ArrayList<>();
 
     while (current.type != TokenType.EOF) {
-      commands.add(parseCommand());
-      if (current.type == TokenType.NEWLINE) eat(TokenType.NEWLINE);
+      if (current.type == TokenType.NEWLINE) {
+        eat(TokenType.NEWLINE);
+        continue;
+      }
+      nodes.add(parseStatement());
     }
-    return commands;
+    return nodes;
   }
 
-  private CommandNode parseCommand() {
-    String name = current.text; // move oder turn_left oder turn_right
+  private AstNode parseStatement() {
+    if (current.text.equals("move")) {
+      return parseMove();
+    }
+    if (current.text.equals("rotate")) {
+      return parseRotate();
+    }
+    throw new RuntimeException("Unrecognized statement" + current.text);
+  }
+
+  private AstNode parseRotate() {
+    eat(TokenType.IDENTIFIER);
+    eat(TokenType.LEFT_PAREN);
+
+    String direction = current.text;
+    if (!direction.equals("right") && !direction.equals("left")) {
+      throw new RuntimeException("Unrecognized direction" + direction);
+    }
+    eat(TokenType.IDENTIFIER);
+
+    eat(TokenType.RIGHT_PAREN);
+    return new RotateNode(direction);
+  }
+
+  private AstNode parseMove() {
     eat(TokenType.IDENTIFIER);
     eat(TokenType.LEFT_PAREN);
     eat(TokenType.RIGHT_PAREN);
-    return new CommandNode(name);
+    return new MoveNode();
   }
 }

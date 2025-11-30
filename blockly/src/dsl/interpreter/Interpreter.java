@@ -1,6 +1,8 @@
 package dsl.interpreter;
 
-import dsl.ast.CommandNode;
+import dsl.ast.AstNode;
+import dsl.ast.MoveNode;
+import dsl.ast.RotateNode;
 import systems.HeroActions;
 
 import java.util.List;
@@ -13,14 +15,14 @@ public class Interpreter {
     this.hero = heroActions;
   }
 
-  public void run (List<CommandNode> program) {
-    for (CommandNode command : program) {
-      // System.out.println("Executing command: " + command.name);
-      switch (command.name) {
-        case "move" -> hero.move();
-        case "turn_left" -> hero.turnLeft();
-        case "turn_right" -> hero.turnRight();
-        default -> System.out.println("Unknown command: " + command.name);
+  public void run(List<AstNode> program) {
+    for (AstNode node : program) {
+      if (node instanceof MoveNode) {
+        hero.move();
+      }
+      if (node instanceof RotateNode rotate) {
+        if (rotate.direction.equals("left")) hero.turnLeft();
+        else hero.turnRight();
       }
     }
   }

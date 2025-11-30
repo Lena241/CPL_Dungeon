@@ -130,17 +130,18 @@ public class Client {
         createSystems();
         Crafting.loadRecipes();
 
-        // Testing the DSL
+//    **** START - Test DSL ****
 //        Game.system(
 //          DslInterpreterSystem.class,
 //          dsl -> dsl.runDsl("""
 //            move()
-//            turn_left()
+//            rotate(left)
 //            move()
-//            turn_right()
+//            rotate(right)
 //            move()
 //            """)
 //        );
+//    **** END - Test DSL ****
 
         startServer();
 
