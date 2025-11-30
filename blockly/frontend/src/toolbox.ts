@@ -5,7 +5,7 @@ export const toolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   contents: [
     {
       kind: "category",
-      name: "Bewegung",
+      name: "Movement",
       colour: "180",
       contents: [
         {
@@ -20,7 +20,7 @@ export const toolbox: Blockly.utils.toolbox.ToolboxDefinition = {
     },
     {
       kind: "category",
-      name: "Richtungen",
+      name: "Direction",
       colour: "200",
       contents: [
         {
@@ -47,7 +47,7 @@ export const toolbox: Blockly.utils.toolbox.ToolboxDefinition = {
     },
     {
       kind: "category",
-      name: "Inventar & Charakter",
+      name: "Inventory & Character",
       colour: "40",
       contents: [
         {
