@@ -1,5 +1,5 @@
 import * as Blockly from "blockly";
-import {javaGenerator} from "../generators/java.ts";
+import { dungeonDslGenerator } from "../generators/dungeon_dsl.ts";
 import {sleep} from "./utils.ts";
 import {
   call_clear_route, call_level_route,
@@ -223,7 +223,7 @@ const setupStartButton = (buttons: Buttons, workspace: Blockly.WorkspaceSvg, del
 
       // Skip the start block itself
       if (currentBlock.type !== "start") {
-        const snippet = javaGenerator.blockToCode(currentBlock, true) as string;
+        const snippet = dungeonDslGenerator.blockToCode(currentBlock, true) as string;
         codeSnippets.push(snippet.trim());
       }
 
