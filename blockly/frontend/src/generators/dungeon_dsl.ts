@@ -3,6 +3,7 @@ import * as Blockly from "blockly";
 import * as start from "./dsl/start.ts";
 import * as character from "./dsl/character.ts";
 import * as directions from "./dsl/directions.ts";
+import * as loops from "./dsl/loops.ts";
 
 class DungeonDSLGenerator extends Blockly.Generator {
   public variables: Map<string, number | string>;
@@ -39,6 +40,7 @@ Object.assign(
   dungeonDslGenerator.forBlock,
   start,
   character,
+  loops,
   directions
 );
 

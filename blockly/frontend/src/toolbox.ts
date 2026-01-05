@@ -16,6 +16,10 @@ export const toolbox: Blockly.utils.toolbox.ToolboxDefinition = {
           kind: "block",
           type: "rotate",
         },
+        // { // Temporary for testing
+        //   kind: "block",
+        //   type: "pickup",
+        // },
       ],
     },
     {

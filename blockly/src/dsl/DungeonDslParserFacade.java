@@ -6,11 +6,11 @@ public class DungeonDslParserFacade {
 
   public Program parse(String source) {
     CharStream input = CharStreams.fromString(source);
-    DungeonDSLLexer lexer = new DungeonDSLLexer(input);
+    dsl.DungeonDSLLexer lexer = new dsl.DungeonDSLLexer(input);
     CommonTokenStream tokens = new CommonTokenStream(lexer);
-    DungeonDSLParser parser = new DungeonDSLParser(tokens);
+    dsl.DungeonDSLParser parser = new dsl.DungeonDSLParser(tokens);
 
-    DungeonDSLParser.ProgramContext tree = parser.program();
+    dsl.DungeonDSLParser.ProgramContext tree = parser.program();
 
     AstBuilder builder = new AstBuilder();
     return builder.buildProgram(tree);

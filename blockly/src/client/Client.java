@@ -124,6 +124,16 @@ public class Client {
           startServer();
 
           DungeonLoader.loadLevel(0);
+
+// TESTING THE NEW FUNCTIONS
+//          DslCodeRunner.instance().executeDslCode("abholen()");
+
+// TESTING REPEAT STATEMENT
+//          DslCodeRunner.instance().executeDslCode("""
+//            repeat 3:
+//            gehen()
+//            end
+//            """);
         });
   }
 

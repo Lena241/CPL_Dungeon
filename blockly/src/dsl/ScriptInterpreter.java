@@ -28,7 +28,16 @@ public class ScriptInterpreter {
     } else if (stmt instanceof RotateStmt rotateStmt) {
       BlocklyCommands.rotate(rotateStmt.direction());
 
-    } else {
+    } else if (stmt instanceof PickupStmt) {
+      BlocklyCommands.pickup();
+
+    } else if (stmt instanceof RepeatStmt r) {
+      for (int i = 0; i < r.getTimes(); i++) {
+        for (Stmt s : r.getBody()) execute(s);
+      }
+
+    }
+    else {
       throw new IllegalArgumentException("Unknown statement: " + stmt);
     }
   }

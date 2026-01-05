@@ -1,5 +1,5 @@
 import * as Blockly from "blockly";
-import { config } from "../config.ts";
+import {config} from "../config.ts";
 
 // delete predefined blocks
 delete Blockly.Blocks["logic_boolean"];
@@ -38,6 +38,16 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     colour: 180,
     tooltip: "Dreht den Spieler nach links oder rechts",
   },
+  // ---------------------- Inventory & Character ----------------------
+  {
+    type: "pickup",
+    message0: "pickup",
+    previousStatement: null,
+    nextStatement: null,
+    colour: 40,
+    tooltip: "Hebt ein Item auf dem aktuellen Feld auf",
+  },
+
   // ---------------------- Variables ----------------------
   {
     type: "set_number",
@@ -57,7 +67,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         check: ["Expression", "Array_get", "Number"],
       },
     ],
-    colour:220,
+    colour: 220,
   },
   {
     type: "set_number_expression",

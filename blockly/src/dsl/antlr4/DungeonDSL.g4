@@ -15,6 +15,8 @@ program
 statement
     : moveStmt
     | rotateStmt
+    | pickupStmt
+    | repeatStmt
     ;
 
 moveStmt
@@ -23,6 +25,14 @@ moveStmt
 
 rotateStmt
     : DREHEN '(' direction ')'
+    ;
+
+pickupStmt
+    : ABHOLEN '(' ')'
+    ;
+
+repeatStmt
+    : REPEAT INT ':' NEWLINE+ (statement NEWLINE*)* END
     ;
 
 direction
@@ -34,8 +44,16 @@ direction
 
 GEHEN   : 'gehen';
 DREHEN  : 'drehen';
+ABHOLEN : 'abholen';
 LINKS   : 'links';
 RECHTS  : 'rechts';
+END     : 'end';
+
+fragment DIGIT : [0-9] ;
+INT     : DIGIT+;
+NUMBER  : DIGIT+ ([.,] DIGIT+)? ;
+
+REPEAT  : 'repeat';
 
 NEWLINE : ('\r'? '\n')+ ;
 WS      : [ \t\r]+ -> skip ;
