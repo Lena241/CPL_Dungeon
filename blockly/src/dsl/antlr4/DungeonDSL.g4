@@ -16,6 +16,9 @@ statement
     : moveStmt
     | rotateStmt
     | pickupStmt
+    | useStmt
+    | pushStmt
+    | pullStmt
     | repeatStmt
     ;
 
@@ -31,12 +34,27 @@ pickupStmt
     : ABHOLEN '(' ')'
     ;
 
+useStmt
+    : BENUTZEN '(' direction ')'
+    ;
+
+pushStmt
+    : SCHIEBEN '(' ')'
+    ;
+
+pullStmt
+    :   ZIEHEN '(' ')'
+    ;
+
 repeatStmt
     : REPEAT INT ':' NEWLINE+ (statement NEWLINE*)* END
     ;
 
 direction
-    : LINKS
+    : VORNE
+    | HINTER
+    | HIER
+    | LINKS
     | RECHTS
     ;
 
@@ -45,8 +63,14 @@ direction
 GEHEN   : 'gehen';
 DREHEN  : 'drehen';
 ABHOLEN : 'abholen';
+BENUTZEN : 'benutzen';
+SCHIEBEN : 'schieben';
+ZIEHEN : 'ziehen';
 LINKS   : 'links';
 RECHTS  : 'rechts';
+VORNE   : 'vorne';
+HINTER  : 'hinter';
+HIER    : 'hier';
 END     : 'end';
 
 fragment DIGIT : [0-9] ;

@@ -1,6 +1,8 @@
 package dsl;
 
 import coderunner.Direction;
+import org.antlr.v4.runtime.ParserRuleContext;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,5 +48,30 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
     List<Stmt> body = ctx.statement().stream().map(s -> (Stmt) visit(s)).collect(Collectors.toList());
 
     return new RepeatStmt(times, body);
+  }
+
+  @Override
+  public Object visitUseStmt(dsl.DungeonDSLParser.UseStmtContext ctx) {
+    String dirText = ctx.direction().getText();
+
+    Direction dir = switch (dirText) {
+      case "vorne" -> Direction.INFRONT;
+      case "hinter" -> Direction.BEHIND;
+      case "hier" -> Direction.HERE;
+      case "links"  -> Direction.LEFT;
+      case "rechts" -> Direction.RIGHT;
+      default -> throw new IllegalArgumentException("Unbekannte Richtung: " + dirText);
+    };
+    return new UseStmt(dir);
+  }
+
+  @Override
+  public Object visitPushStmt(dsl.DungeonDSLParser.PushStmtContext ctx) {
+    return new PushStmt();
+  }
+
+  @Override
+  public Object visitPullStmt(dsl.DungeonDSLParser.PullStmtContext ctx) {
+    return new PullStmt();
   }
 }
