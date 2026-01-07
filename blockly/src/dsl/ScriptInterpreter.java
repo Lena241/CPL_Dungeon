@@ -36,6 +36,14 @@ public class ScriptInterpreter {
         for (Stmt s : r.getBody()) execute(s);
       }
 
+    } else if (stmt instanceof UseStmt u) {
+      BlocklyCommands.interact(u.direction());
+
+    } else if (stmt instanceof PushStmt) {
+      BlocklyCommands.push();
+
+    } else if (stmt instanceof PullStmt) {
+      BlocklyCommands.pull();
     }
     else {
       throw new IllegalArgumentException("Unknown statement: " + stmt);
