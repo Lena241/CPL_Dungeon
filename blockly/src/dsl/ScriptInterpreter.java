@@ -44,6 +44,9 @@ public class ScriptInterpreter {
 
     } else if (stmt instanceof PullStmt) {
       BlocklyCommands.pull();
+
+    } else if (stmt instanceof ShootFireballStmt) {
+      BlocklyCommands.shootFireball();
     }
     else {
       throw new IllegalArgumentException("Unknown statement: " + stmt);
