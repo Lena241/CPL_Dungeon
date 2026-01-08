@@ -18,6 +18,7 @@ statement
     | pickupStmt
     | useStmt
     | pushStmt
+    | shootFireballStmt
     | pullStmt
     | repeatStmt
     ;
@@ -36,6 +37,10 @@ pickupStmt
 
 useStmt
     : BENUTZEN '(' direction ')'
+    ;
+
+shootFireballStmt
+    : FEUERBALL '(' ')'
     ;
 
 pushStmt
@@ -64,6 +69,7 @@ GEHEN   : 'gehen';
 DREHEN  : 'drehen';
 ABHOLEN : 'abholen';
 BENUTZEN : 'benutzen';
+FEUERBALL : 'feuerball';
 SCHIEBEN : 'schieben';
 ZIEHEN : 'ziehen';
 LINKS   : 'links';

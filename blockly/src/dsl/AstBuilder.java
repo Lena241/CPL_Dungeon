@@ -1,7 +1,6 @@
 package dsl;
 
 import coderunner.Direction;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,11 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
     };
 
     return new RotateStmt(dir);
+  }
+
+  @Override
+  public Object visitShootFireballStmt(dsl.DungeonDSLParser.ShootFireballStmtContext ctx) {
+    return new ShootFireballStmt();
   }
 
   @Override
