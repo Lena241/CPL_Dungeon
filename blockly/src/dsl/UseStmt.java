@@ -18,3 +18,4 @@ public final class UseStmt implements Stmt {
     return "UseStmt{" + direction + "}";
   }
 }
+
