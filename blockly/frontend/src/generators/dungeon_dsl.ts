@@ -5,6 +5,7 @@ import * as character from "./dsl/character.ts";
 import * as directions from "./dsl/directions.ts";
 import * as loops from "./dsl/loops.ts";
 import * as skills from "./dsl/skills.ts";
+import * as condition from "./dsl/condition.ts";
 
 class DungeonDSLGenerator extends Blockly.Generator {
   public variables: Map<string, number | string>;
@@ -43,6 +44,7 @@ Object.assign(
   character,
   skills,
   loops,
+  condition,
   directions
 );
 
