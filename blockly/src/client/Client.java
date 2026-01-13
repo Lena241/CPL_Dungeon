@@ -128,13 +128,12 @@ public class Client {
 
           DungeonLoader.loadLevel(0);
 
-// TESTING THE NEW FUNCTIONS
-//          DslCodeRunner.instance().executeDslCode("abholen()");
-
-// TESTING REPEAT STATEMENT
+          // TEST IF-ELSE STATEMENT
 //          DslCodeRunner.instance().executeDslCode("""
-//            repeat 3:
-//            gehen()
+//            if aktiv(vorne):
+//            drehen(rechts)
+//            else:
+//            drehen(links)
 //            end
 //            """);
         });

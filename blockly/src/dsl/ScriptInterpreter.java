@@ -1,8 +1,9 @@
 package dsl;
 
 import coderunner.BlocklyCommands;
+import coderunner.Direction;
 
-public class ScriptInterpreter {
+public class ScriptInterpreter implements ConditionContext {
 
   private final int sleepAfterEachStmtMillis;
 
@@ -31,7 +32,23 @@ public class ScriptInterpreter {
     } else if (stmt instanceof PickupStmt) {
       BlocklyCommands.pickup();
 
-    } else if (stmt instanceof RepeatStmt r) {
+    } else if (stmt instanceof IfStmt i) {
+      boolean matched = false;
+
+      for (IfBranch b : i.getBranches()) {
+        if (b.getCondition().eval(this)) {
+          matched = true;
+          for (Stmt s : b.getBody()) execute(s);
+          break;
+        }
+      }
+
+      if (!matched && i.getElseBody() != null) {
+        for (Stmt s : i.getElseBody()) execute(s);
+      }
+    }
+
+    else if (stmt instanceof RepeatStmt r) {
       for (int i = 0; i < r.getTimes(); i++) {
         for (Stmt s : r.getBody()) execute(s);
       }
@@ -61,5 +78,10 @@ public class ScriptInterpreter {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
+  }
+
+  @Override
+  public boolean isActive(Direction dir) {
+    return BlocklyCommands.active(dir);
   }
 }
