@@ -151,6 +151,62 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   }
 
   @Override
+  public Object visitIfStmt(dsl.DungeonDSLParser.IfStmtContext ctx) {
+    List<IfBranch> branches = new ArrayList<>();
+
+    // The grammar produces condition() list and block() list in order.
+    // First k blocks belong to falls/sonst falls branches.
+    // If there is an "sonst" block, it is the last block and has no condition.
+
+    int condCount = ctx.condition().size();
+    int blockCount = ctx.block().size();
+
+    // Build branches: (condition[i], block[i]) for i in [0..condCount-1]
+    for (int i = 0; i < condCount; i++) {
+      Expr cond = (Expr) visit(ctx.condition(i));
+      List<Stmt> body = buildBlock(ctx.block(i));
+      branches.add(new IfBranch(cond, body));
+    }
+
+    // Optional else body: if there are more blocks than conditions
+    List<Stmt> elseBody = null;
+    if (blockCount > condCount) {
+      elseBody = buildBlock(ctx.block(blockCount - 1));
+    }
+
+    return new IfStmt(branches, elseBody);
+  }
+
+  private List<Stmt> buildBlock(dsl.DungeonDSLParser.BlockContext blockCtx) {
+    List<Stmt> stmts = new ArrayList<>();
+    for (var sCtx : blockCtx.statement()) {
+      stmts.add((Stmt) visit(sCtx));
+    }
+    return stmts;
+  }
+
+  @Override
+  public Object visitPredicate(dsl.DungeonDSLParser.PredicateContext ctx) {
+    // active(direction)
+    Direction dir = (Direction) visit(ctx.direction());
+    return new ActiveExpr(dir);
+  }
+
+  @Override
+  public Object visitDirection(dsl.DungeonDSLParser.DirectionContext ctx) {
+    String dirText = ctx.getText();
+    return switch (dirText) {
+      case "vorne" -> Direction.INFRONT;
+      case "hinter" -> Direction.BEHIND;
+      case "hier" -> Direction.HERE;
+      case "links"  -> Direction.LEFT;
+      case "rechts" -> Direction.RIGHT;
+      default -> throw new IllegalArgumentException("Unbekannte Richtung: " + dirText);
+    };
+  }
+
+
+  @Override
   public Object visitPushStmt(dsl.DungeonDSLParser.PushStmtContext ctx) {
     return new PushStmt();
   }
@@ -159,4 +215,5 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   public Object visitPullStmt(dsl.DungeonDSLParser.PullStmtContext ctx) {
     return new PullStmt();
   }
+
 }

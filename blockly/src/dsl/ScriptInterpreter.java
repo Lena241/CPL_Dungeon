@@ -5,11 +5,11 @@ import coderunner.ExpressionType;
 import dsl.auxiliary.ExpressionResolver;
 import dsl.auxiliary.SymbolTable;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import coderunner.Direction;
 
-public class ScriptInterpreter {
+public class ScriptInterpreter implements ConditionContext {
 
   private final int sleepAfterEachStmtMillis;
 
@@ -40,8 +40,25 @@ public class ScriptInterpreter {
     } else if (stmt instanceof PickupStmt) {
       BlocklyCommands.pickup();
 
-    } else if (stmt instanceof RepeatStmt r) {
-      SymbolTable childSymbolTable = new SymbolTable(symbolTable);
+    } else if (stmt instanceof IfStmt i) {
+      boolean matched = false;
+
+      for (IfBranch b : i.getBranches()) {
+        if (b.getCondition().eval(this)) {
+          SymbolTable childSymbolTable = new SymbolTable(symbolTable);
+          matched = true;
+          for (Stmt s : b.getBody()) execute(s, childSymbolTable);
+          break;
+        }
+      }
+
+      if (!matched && i.getElseBody() != null) {
+        SymbolTable childSymbolTable = new SymbolTable(symbolTable);
+        for (Stmt s : i.getElseBody()) execute(s, childSymbolTable);
+      }
+
+  } else if (stmt instanceof RepeatStmt r) {
+    SymbolTable childSymbolTable = new SymbolTable(symbolTable);
       for (int i = 0; i < r.getTimes(); i++) {
         for (Stmt s : r.getBody()) execute(s, childSymbolTable);
       }
@@ -84,5 +101,10 @@ public class ScriptInterpreter {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
+  }
+
+  @Override
+  public boolean isActive(Direction dir) {
+    return BlocklyCommands.active(dir);
   }
 }

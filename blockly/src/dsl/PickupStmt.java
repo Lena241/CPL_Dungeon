@@ -1,4 +1,4 @@
 package dsl;
 
-public class PickupStmt implements Stmt {
+public final class PickupStmt implements Stmt {
 }
