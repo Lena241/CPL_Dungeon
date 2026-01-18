@@ -44,6 +44,14 @@ tasks.register('runBlockly', JavaExec) {
     args "web=${webFlag}"
 }
 
+tasks.register('testBlockly', JavaExec) {
+    group = 'starter'
+    mainClass = 'test.TestServer'
+    classpath = sourceSets.main.runtimeClasspath
+    def webFlag = project.hasProperty('web') ? project.property('web') : 'false'
+    args "web=${webFlag}"
+}
+
 
 tasks.register('buildBlocklyJar', Jar) {
     group 'jar'
