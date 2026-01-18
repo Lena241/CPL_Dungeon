@@ -1,6 +1,7 @@
 package dsl;
 
 import coderunner.Direction;
+import dsl.antlr4.*;
 import dsl.expr.ActiveExpr;
 import dsl.expr.Expr;
 import dsl.statements.*;
@@ -9,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
+public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
 
-  public Program buildProgram(dsl.DungeonDSLParser.ProgramContext ctx) {
+  public Program buildProgram(DungeonDSLParser.ProgramContext ctx) {
     List<Stmt> stmts = new ArrayList<>();
     for (var stmtCtx : ctx.statement()) {
       Stmt stmt = (Stmt) visit(stmtCtx);
@@ -21,12 +22,12 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitMoveStmt(dsl.DungeonDSLParser.MoveStmtContext ctx) {
+  public Object visitMoveStmt(DungeonDSLParser.MoveStmtContext ctx) {
     return new MoveStmt();
   }
 
   @Override
-  public Object visitRotateStmt(dsl.DungeonDSLParser.RotateStmtContext ctx) {
+  public Object visitRotateStmt(DungeonDSLParser.RotateStmtContext ctx) {
     String dirText = ctx.direction().getText();
 
     Direction dir = switch (dirText) {
@@ -39,7 +40,7 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitShootFireballStmt(dsl.DungeonDSLParser.ShootFireballStmtContext ctx) {
+  public Object visitShootFireballStmt(DungeonDSLParser.ShootFireballStmtContext ctx) {
     return new ShootFireballStmt();
   }
 
@@ -107,14 +108,13 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitPickupStmt(dsl.DungeonDSLParser.PickupStmtContext ctx) {
+  public Object visitPickupStmt(DungeonDSLParser.PickupStmtContext ctx) {
     return new PickupStmt();
   }
 
   @Override
-  public Object visitRepeatStmt(dsl.DungeonDSLParser.RepeatStmtContext ctx) {
-    int times = Integer.parseInt(ctx.INT().getText());
-
+  public Object visitRepeatStmt(DungeonDSLParser.RepeatStmtContext ctx) {
+    int times = Integer.parseInt(ctx.range().INT().getText());
     List<Stmt> body = ctx.statement().stream().map(s -> (Stmt) visit(s)).collect(Collectors.toList());
 
     return new RepeatStmt(times, body);
@@ -139,7 +139,7 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitUseStmt(dsl.DungeonDSLParser.UseStmtContext ctx) {
+  public Object visitUseStmt(DungeonDSLParser.UseStmtContext ctx) {
     String dirText = ctx.direction().getText();
 
     Direction dir = switch (dirText) {
@@ -154,7 +154,7 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitIfStmt(dsl.DungeonDSLParser.IfStmtContext ctx) {
+  public Object visitIfStmt(DungeonDSLParser.IfStmtContext ctx) {
     List<IfBranch> branches = new ArrayList<>();
 
     // The grammar produces condition() list and block() list in order.
@@ -180,7 +180,7 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
     return new IfStmt(branches, elseBody);
   }
 
-  private List<Stmt> buildBlock(dsl.DungeonDSLParser.BlockContext blockCtx) {
+  private List<Stmt> buildBlock(DungeonDSLParser.BlockContext blockCtx) {
     List<Stmt> stmts = new ArrayList<>();
     for (var sCtx : blockCtx.statement()) {
       stmts.add((Stmt) visit(sCtx));
@@ -189,14 +189,14 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitPredicate(dsl.DungeonDSLParser.PredicateContext ctx) {
+  public Object visitPredicate(DungeonDSLParser.PredicateContext ctx) {
     // active(direction)
     Direction dir = (Direction) visit(ctx.direction());
     return new ActiveExpr(dir);
   }
 
   @Override
-  public Object visitDirection(dsl.DungeonDSLParser.DirectionContext ctx) {
+  public Object visitDirection(DungeonDSLParser.DirectionContext ctx) {
     String dirText = ctx.getText();
     return switch (dirText) {
       case "vorne" -> Direction.INFRONT;
@@ -210,12 +210,12 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
 
 
   @Override
-  public Object visitPushStmt(dsl.DungeonDSLParser.PushStmtContext ctx) {
+  public Object visitPushStmt(DungeonDSLParser.PushStmtContext ctx) {
     return new PushStmt();
   }
 
   @Override
-  public Object visitPullStmt(dsl.DungeonDSLParser.PullStmtContext ctx) {
+  public Object visitPullStmt(DungeonDSLParser.PullStmtContext ctx) {
     return new PullStmt();
   }
 

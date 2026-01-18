@@ -5,7 +5,8 @@ export function repeat(block: Blockly.Block, generator: Blockly.Generator): stri
   const times = generator.valueToCode(block, "TIMES", Order.NONE) || "0";
   const body  = generator.statementToCode(block, "DO");
   const safeBody = body && body.trim().length ? body : "\n";
-  return `repeat ${times}:\n${safeBody}end\n`;
+  const repeat_var = block.id.replace(/[^a-zA-Z_]/g, '');
+  return `for ${repeat_var} in range (${times}):\n${safeBody}\n`;
 }
 
 
