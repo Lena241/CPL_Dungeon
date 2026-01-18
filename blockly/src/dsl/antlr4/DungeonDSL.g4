@@ -21,6 +21,8 @@ statement
     | shootFireballStmt
     | pullStmt
     | repeatStmt
+    | setVariableStmt
+    | switchStmt
     ;
 
 moveStmt
@@ -55,6 +57,41 @@ repeatStmt
     : REPEAT INT ':' NEWLINE+ (statement NEWLINE*)* END
     ;
 
+switchStmt
+    : SWITCH '(' VAR_NAME ')' ':' NEWLINE+ (caseStmt NEWLINE*)* (defaultStmt NEWLINE*)? END;
+
+caseStmt
+    : CASE caseValueStmt ':' NEWLINE+ (statement NEWLINE*)*;
+
+caseValueStmt
+    : VAR_NAME
+    | INT;
+
+defaultStmt
+    : DEFAULT ':' NEWLINE+ (statement NEWLINE*)*;
+
+setVariableStmt
+    : VAR_NAME '=' expressionRoot;
+
+expressionRoot
+    : expressionFirstOrder;
+
+expressionFirstOrder
+    : expressionSecondOrder
+    | expressionFirstOrder FIRST_ORDER_OPERATOR expressionFirstOrder;
+
+
+expressionSecondOrder
+    : expressionLeaf
+    | expressionSecondOrder SECOND_ORDER_OPERATOR expressionSecondOrder
+    ;
+
+
+expressionLeaf
+    : VAR_NAME
+    | INT
+    | '(' expressionRoot ')';
+
 direction
     : VORNE
     | HINTER
@@ -78,6 +115,14 @@ VORNE   : 'vorne';
 HINTER  : 'hinter';
 HIER    : 'hier';
 END     : 'end';
+SWITCH  : 'switch';
+CASE    : 'case';
+DEFAULT : 'default';
+
+VAR_NAME : [a-zA-Z]+[a-zA-Z0-9]*;
+STRING  : '"' ~["]* '"';
+BOOLEAN : 'true'
+        | 'false';
 
 fragment DIGIT : [0-9] ;
 INT     : DIGIT+;
@@ -88,3 +133,11 @@ REPEAT  : 'repeat';
 NEWLINE : ('\r'? '\n')+ ;
 WS      : [ \t\r]+ -> skip ;
 COMMENT : '#' ~[\r\n]* -> skip;
+
+FIRST_ORDER_OPERATOR
+    : '+'
+    | '-';
+
+SECOND_ORDER_OPERATOR
+    : '*'
+    | '/';
