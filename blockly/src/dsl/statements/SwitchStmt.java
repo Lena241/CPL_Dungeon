@@ -1,10 +1,10 @@
-package dsl;
+package dsl.statements;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class SwitchStmt implements Stmt {
+public class SwitchStmt implements Stmt{
 
   Dictionary<String, CaseStmt> caseStmtDictionary;
   SwitchDefaultStmt switchDefaultStmt;

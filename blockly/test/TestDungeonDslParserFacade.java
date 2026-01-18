@@ -1,12 +1,9 @@
 import coderunner.ExpressionType;
 import com.ibm.icu.impl.Assert;
-import core.Game;
 import dsl.*;
-import org.junit.jupiter.api.BeforeAll;
+import dsl.statements.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 public class TestDungeonDslParserFacade {
   DungeonDslParserFacade dungeonDslParserFacade;

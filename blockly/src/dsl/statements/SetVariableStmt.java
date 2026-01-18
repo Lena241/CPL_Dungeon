@@ -1,6 +1,6 @@
-package dsl;
+package dsl.statements;
 
-public class SetVariableStmt implements Stmt {
+public class SetVariableStmt implements Stmt{
 
   private final String variable_name;
   private final ExpressionStmt value;

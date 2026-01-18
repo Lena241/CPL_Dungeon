@@ -1,9 +1,9 @@
-package dsl;
+package dsl.statements;
 
 
 import coderunner.ExpressionType;
 
-public class ExpressionStmt implements Stmt {
+public class ExpressionStmt implements Stmt{
 
   private final ExpressionStmt leftExpression;
   private final ExpressionStmt rightExpression;

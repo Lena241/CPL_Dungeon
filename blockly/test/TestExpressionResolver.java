@@ -1,6 +1,5 @@
 import com.ibm.icu.impl.Assert;
-import dsl.DungeonDslParserFacade;
-import dsl.ExpressionStmt;
+import dsl.statements.ExpressionStmt;
 import dsl.auxiliary.ExpressionResolver;
 import dsl.auxiliary.SymbolTable;
 import org.junit.jupiter.api.BeforeEach;

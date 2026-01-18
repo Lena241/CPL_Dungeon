@@ -1,13 +1,13 @@
-package dsl;
+package dsl.statements;
 
 import java.util.List;
 
-public class CaseStmt implements Stmt {
+public class CaseStmt implements Stmt{
 
-  private final List<Stmt> statements;
+  private final List<dsl.statements.Stmt> statements;
   private final String variableValue;
 
-  public CaseStmt(List<Stmt> statements, String variableValue){
+  public CaseStmt(List<dsl.statements.Stmt> statements, String variableValue){
     this.statements = statements;
     this.variableValue = variableValue;
   }

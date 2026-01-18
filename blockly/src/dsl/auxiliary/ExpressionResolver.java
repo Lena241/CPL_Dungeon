@@ -1,7 +1,7 @@
 package dsl.auxiliary;
 
 import coderunner.ExpressionType;
-import dsl.ExpressionStmt;
+import dsl.statements.ExpressionStmt;
 
 public class ExpressionResolver {
 

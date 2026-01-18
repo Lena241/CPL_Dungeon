@@ -1,11 +1,9 @@
 package dsl;
 
 import coderunner.BlocklyCommands;
-import coderunner.ExpressionType;
 import dsl.auxiliary.ExpressionResolver;
 import dsl.auxiliary.SymbolTable;
 
-import java.util.HashMap;
 import java.util.List;
 import coderunner.Direction;
 import dsl.statements.*;
@@ -82,7 +80,7 @@ public class ScriptInterpreter implements ConditionContext {
       symbolTable.add(variableName, variableValue);
 
     } else if (stmt instanceof SwitchStmt switchStmt){
-      String variableValue = Integer.toString(symbolTable.resolve(switchStmt.variableSymbol));
+      String variableValue = Integer.toString(symbolTable.resolve(switchStmt.getVariableSymbol()));
       List<Stmt> statements = switchStmt.getCaseStatementsByVariableValue(variableValue);
       SymbolTable childSymbolTable = new SymbolTable(symbolTable);
       for (Stmt s : statements) {
