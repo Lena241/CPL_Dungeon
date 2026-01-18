@@ -22,6 +22,8 @@ statement
     | pullStmt
     | repeatStmt
     | ifStmt
+    | setVariableStmt
+    | switchStmt
     ;
 
 moveStmt
@@ -93,6 +95,41 @@ block
   : (statement NEWLINE*)+
   ;
 
+switchStmt
+    : SWITCH '(' VAR_NAME ')' ':' NEWLINE+ (caseStmt NEWLINE*)* (defaultStmt NEWLINE*)? END;
+
+caseStmt
+    : CASE caseValueStmt ':' NEWLINE+ (statement NEWLINE*)*;
+
+caseValueStmt
+    : VAR_NAME
+    | INT;
+
+defaultStmt
+    : DEFAULT ':' NEWLINE+ (statement NEWLINE*)*;
+
+setVariableStmt
+    : VAR_NAME '=' expressionRoot;
+
+expressionRoot
+    : expressionFirstOrder;
+
+expressionFirstOrder
+    : expressionSecondOrder
+    | expressionFirstOrder FIRST_ORDER_OPERATOR expressionFirstOrder;
+
+
+expressionSecondOrder
+    : expressionLeaf
+    | expressionSecondOrder SECOND_ORDER_OPERATOR expressionSecondOrder
+    ;
+
+
+expressionLeaf
+    : VAR_NAME
+    | INT
+    | '(' expressionRoot ')';
+
 direction
     : VORNE
     | HINTER
@@ -116,6 +153,14 @@ VORNE   : 'vorne';
 HINTER  : 'hinter';
 HIER    : 'hier';
 END     : 'end';
+SWITCH  : 'switch';
+CASE    : 'case';
+DEFAULT : 'default';
+
+VAR_NAME : [a-zA-Z]+[a-zA-Z0-9]*;
+STRING  : '"' ~["]* '"';
+BOOLEAN : 'true'
+        | 'false';
 
 ACTIVE: 'activ';
 
@@ -139,3 +184,11 @@ ID      : (CHAR | '_')(CHAR | DIGIT | '_')*;
 
 fragment CHAR   : [a-zA-Z];
 fragment DIGIT : [0-9] ;
+
+FIRST_ORDER_OPERATOR
+    : '+'
+    | '-';
+
+SECOND_ORDER_OPERATOR
+    : '*'
+    | '/';

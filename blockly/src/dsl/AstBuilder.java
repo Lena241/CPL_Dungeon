@@ -44,6 +44,69 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     return new ShootFireballStmt();
   }
 
+  public Object visitSetVariableStmt(dsl.DungeonDSLParser.SetVariableStmtContext ctx){
+    String variable_name = ctx.VAR_NAME().getText();
+    ExpressionStmt value = (ExpressionStmt) this.visitExpressionRootStmt(ctx.expressionRoot());
+
+    return new SetVariableStmt(variable_name, value);
+  }
+
+  public Object visitExpressionRootStmt(dsl.DungeonDSLParser.ExpressionRootContext ctx){
+
+
+    if (ctx.expressionFirstOrder() != null) {
+      return (ExpressionStmt) this.visitExpressionFirstOrderStmt(ctx.expressionFirstOrder());
+    } else {
+      throw new IllegalArgumentException("Expression without value!");
+    }
+  }
+
+  public Object visitExpressionFirstOrderStmt(dsl.DungeonDSLParser.ExpressionFirstOrderContext ctx){
+
+
+    if (ctx.expressionFirstOrder().size() == 2) {
+      List<dsl.DungeonDSLParser.ExpressionFirstOrderContext> expressionSet = ctx.expressionFirstOrder();
+      ExpressionStmt leftInput = (ExpressionStmt) this.visitExpressionFirstOrderStmt(expressionSet.get(0));
+      ExpressionStmt rightInput = (ExpressionStmt) this.visitExpressionFirstOrderStmt(expressionSet.get(1));
+      return new ExpressionStmt(leftInput, rightInput, ctx.FIRST_ORDER_OPERATOR().getText());
+    } else if (ctx.expressionSecondOrder() != null) {
+      return (ExpressionStmt) this.visitExpressionSecondOrderStmt(ctx.expressionSecondOrder());
+    } else {
+      throw new IllegalArgumentException("Expression without value!");
+    }
+  }
+
+  public Object visitExpressionSecondOrderStmt(dsl.DungeonDSLParser.ExpressionSecondOrderContext ctx){
+
+
+    if (ctx.expressionSecondOrder().size() == 2) {
+      List<dsl.DungeonDSLParser.ExpressionSecondOrderContext> expressionSet = ctx.expressionSecondOrder();
+      ExpressionStmt leftInput = (ExpressionStmt) this.visitExpressionSecondOrderStmt(expressionSet.get(0));
+      ExpressionStmt rightInput = (ExpressionStmt) this.visitExpressionSecondOrderStmt(expressionSet.get(1));
+      return new ExpressionStmt(leftInput, rightInput, ctx.SECOND_ORDER_OPERATOR().getText());
+    } else if (ctx.expressionLeaf() != null) {
+      return (ExpressionStmt) this.visitExpressionLeafStmt(ctx.expressionLeaf());
+    } else {
+      throw new IllegalArgumentException("Expression without value!");
+    }
+  }
+
+  public Object visitExpressionLeafStmt(dsl.DungeonDSLParser.ExpressionLeafContext ctx){
+
+
+    if (ctx.VAR_NAME() != null) {
+      String variable_name = ctx.VAR_NAME().getText();
+      return new ExpressionStmt(variable_name, true);
+    } else if (ctx.INT() != null) {
+      String value = ctx.INT().getText();
+      return new ExpressionStmt(value, false);
+    } else if (ctx.expressionRoot() != null) {
+       return (ExpressionStmt) this.visitExpressionRootStmt(ctx.expressionRoot());
+    } else {
+      throw new IllegalArgumentException("Expression without value!");
+    }
+  }
+
   @Override
   public Object visitPickupStmt(DungeonDSLParser.PickupStmtContext ctx) {
     return new PickupStmt();
@@ -55,6 +118,24 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     List<Stmt> body = ctx.statement().stream().map(s -> (Stmt) visit(s)).collect(Collectors.toList());
 
     return new RepeatStmt(times, body);
+  }
+
+  public Object visitSwitchStmt(dsl.DungeonDSLParser.SwitchStmtContext ctx){
+    String variableSymbol = ctx.VAR_NAME().getText();
+    List<CaseStmt> caseStmtList = new ArrayList<>();
+
+    List<Stmt> defaultStatements = ctx.defaultStmt().statement().stream().map(s -> (Stmt) visit(s)).toList();
+
+    SwitchDefaultStmt switchDefaultStmt = new SwitchDefaultStmt(defaultStatements);
+
+    for (int i = 0; i < ctx.caseStmt().size(); i++)
+    {
+      List<Stmt> caseStatements = ctx.caseStmt(i).statement().stream().map(s -> (Stmt) visit(s)).toList();
+      String variableValue = ctx.caseStmt(i).caseValueStmt().getText();
+      caseStmtList.add(new CaseStmt(caseStatements,variableValue));
+    }
+
+    return new SwitchStmt(caseStmtList, switchDefaultStmt, variableSymbol);
   }
 
   @Override

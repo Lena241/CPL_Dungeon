@@ -1,6 +1,10 @@
 package dsl;
 
 import coderunner.BlocklyCommands;
+import dsl.auxiliary.ExpressionResolver;
+import dsl.auxiliary.SymbolTable;
+
+import java.util.List;
 import coderunner.Direction;
 import dsl.statements.*;
 
@@ -17,13 +21,15 @@ public class ScriptInterpreter implements ConditionContext {
   }
 
   public void run(Program program) {
+    SymbolTable symbolTable = new SymbolTable();
     for (Stmt stmt : program.statements()) {
-      execute(stmt);
+      execute(stmt, symbolTable);
       sleepIfNeeded();
     }
   }
 
-  private void execute(Stmt stmt) {
+
+  private void execute(Stmt stmt, SymbolTable symbolTable) {
     if (stmt instanceof MoveStmt) {
       BlocklyCommands.move();
 
@@ -38,22 +44,22 @@ public class ScriptInterpreter implements ConditionContext {
 
       for (IfBranch b : i.getBranches()) {
         if (b.getCondition().eval(this)) {
+          SymbolTable childSymbolTable = new SymbolTable(symbolTable);
           matched = true;
-          for (Stmt s : b.getBody()) execute(s);
+          for (Stmt s : b.getBody()) execute(s, childSymbolTable);
           break;
         }
       }
 
       if (!matched && i.getElseBody() != null) {
-        for (Stmt s : i.getElseBody()) execute(s);
+        SymbolTable childSymbolTable = new SymbolTable(symbolTable);
+        for (Stmt s : i.getElseBody()) execute(s, childSymbolTable);
       }
-    }
 
-    else if (stmt instanceof RepeatStmt r) {
-      //TODO instead of i use ID (symboltabelle)
-      //if ID does not exist, create new local ID with startvalue 0
-      for (int i = 0; i < r.getGoal(); i++) {
-        for (Stmt s : r.getBody()) execute(s);
+  } else if (stmt instanceof RepeatStmt r) {
+    SymbolTable childSymbolTable = new SymbolTable(symbolTable);
+      for (int i = 0; i < r.getTimes(); i++) {
+        for (Stmt s : r.getBody()) execute(s, childSymbolTable);
       }
 
     } else if (stmt instanceof UseStmt u) {
@@ -67,8 +73,21 @@ public class ScriptInterpreter implements ConditionContext {
 
     } else if (stmt instanceof ShootFireballStmt) {
       BlocklyCommands.shootFireball();
-    }
-    else {
+
+    } else if (stmt instanceof SetVariableStmt setVariableStmt) {
+      String variableName = setVariableStmt.getVariableName();
+      Integer variableValue = ExpressionResolver.ResolveExpression(setVariableStmt.getVariableValue(), symbolTable);
+      symbolTable.add(variableName, variableValue);
+
+    } else if (stmt instanceof SwitchStmt switchStmt){
+      String variableValue = Integer.toString(symbolTable.resolve(switchStmt.getVariableSymbol()));
+      List<Stmt> statements = switchStmt.getCaseStatementsByVariableValue(variableValue);
+      SymbolTable childSymbolTable = new SymbolTable(symbolTable);
+      for (Stmt s : statements) {
+        execute(s, childSymbolTable);
+      }
+
+    } else {
       throw new IllegalArgumentException("Unknown statement: " + stmt);
     }
   }
