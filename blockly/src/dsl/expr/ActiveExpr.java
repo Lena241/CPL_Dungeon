@@ -1,6 +1,7 @@
-package dsl;
+package dsl.expr;
 
 import coderunner.Direction;
+import dsl.ConditionContext;
 
 public final class ActiveExpr implements Expr {
   private final Direction direction;

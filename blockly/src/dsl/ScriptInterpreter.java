@@ -2,6 +2,7 @@ package dsl;
 
 import coderunner.BlocklyCommands;
 import coderunner.Direction;
+import dsl.statements.*;
 
 public class ScriptInterpreter implements ConditionContext {
 

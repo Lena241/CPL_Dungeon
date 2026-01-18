@@ -1,4 +1,4 @@
-package dsl;
+package dsl.statements;
 
 public final class PullStmt implements Stmt {
   @Override

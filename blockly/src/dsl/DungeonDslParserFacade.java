@@ -1,5 +1,6 @@
 package dsl;
 
+import dsl.statements.Program;
 import org.antlr.v4.runtime.*;
 
 public class DungeonDslParserFacade {

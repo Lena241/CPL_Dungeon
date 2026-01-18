@@ -1,11 +1,12 @@
-package dsl;
+package dsl.statements;
 
 import coderunner.Direction;
 
-public final class UseStmt implements Stmt {
+public final class RotateStmt implements Stmt {
+
   private final Direction direction;
 
-  public UseStmt(Direction direction) {
+  public RotateStmt(Direction direction) {
     this.direction = direction;
   }
 
@@ -15,7 +16,6 @@ public final class UseStmt implements Stmt {
 
   @Override
   public String toString() {
-    return "UseStmt{" + direction + "}";
+    return "RotateStmt{" + direction + '}';
   }
 }
-

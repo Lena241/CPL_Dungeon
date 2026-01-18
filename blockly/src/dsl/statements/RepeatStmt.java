@@ -1,8 +1,8 @@
-package dsl;
+package dsl.statements;
 
 import java.util.List;
 
-public final class RepeatStmt implements  Stmt {
+public final class RepeatStmt implements Stmt {
   private final int times;
   private final List<Stmt> body;
 

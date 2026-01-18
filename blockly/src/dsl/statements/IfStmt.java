@@ -1,4 +1,4 @@
-package dsl;
+package dsl.statements;
 
 import java.util.List;
 

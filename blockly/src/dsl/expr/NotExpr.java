@@ -1,4 +1,6 @@
-package dsl;
+package dsl.expr;
+
+import dsl.ConditionContext;
 
 public final class NotExpr implements Expr {
   private final Expr inner;
