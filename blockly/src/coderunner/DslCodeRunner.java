@@ -3,7 +3,7 @@ package coderunner;
 import core.Game;
 import core.utils.logging.DungeonLogger;
 import dsl.DungeonDslParserFacade;
-import dsl.Program;
+import dsl.statements.Program;
 import dsl.ScriptInterpreter;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
