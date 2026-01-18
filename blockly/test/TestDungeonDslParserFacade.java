@@ -70,4 +70,13 @@ public class TestDungeonDslParserFacade {
     Assert.assrt(setVariableStmt.getVariableValue().getRightExpression().getExpressionType() == ExpressionType.ResolveVariable);
     Assert.assrt(setVariableStmt.getVariableValue().getExpressionType() == ExpressionType.ApplyOperator);
   }
+
+  @Test
+  public void TestSwitchStatement(){
+    String input = "a = 3\nswitch (a) : \n case 2:\n gehen() \n case 3:\n feuerball()\n default:\n schieben()\n end";
+    Program output = this.dungeonDslParserFacade.parse(input);
+    SwitchStmt switchStmt = (SwitchStmt) output.statements().get(1);
+    Assert.assrt(switchStmt.getCaseStatementsByVariableValue("3").get(0).getClass() == ShootFireballStmt.class);
+    Assert.assrt(switchStmt.getCaseStatementsByVariableValue("4").get(0).getClass() == PushStmt.class);
+  }
 }

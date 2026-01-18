@@ -117,6 +117,24 @@ public class AstBuilder extends dsl.DungeonDSLBaseVisitor<Object> {
     return new RepeatStmt(times, body);
   }
 
+  public Object visitSwitchStmt(dsl.DungeonDSLParser.SwitchStmtContext ctx){
+    String variableSymbol = ctx.VAR_NAME().getText();
+    List<CaseStmt> caseStmtList = new ArrayList<>();
+
+    List<Stmt> defaultStatements = ctx.defaultStmt().statement().stream().map(s -> (Stmt) visit(s)).toList();
+
+    SwitchDefaultStmt switchDefaultStmt = new SwitchDefaultStmt(defaultStatements);
+
+    for (int i = 0; i < ctx.caseStmt().size(); i++)
+    {
+      List<Stmt> caseStatements = ctx.caseStmt(i).statement().stream().map(s -> (Stmt) visit(s)).toList();
+      String variableValue = ctx.caseStmt(i).caseValueStmt().getText();
+      caseStmtList.add(new CaseStmt(caseStatements,variableValue));
+    }
+
+    return new SwitchStmt(caseStmtList, switchDefaultStmt, variableSymbol);
+  }
+
   @Override
   public Object visitUseStmt(dsl.DungeonDSLParser.UseStmtContext ctx) {
     String dirText = ctx.direction().getText();

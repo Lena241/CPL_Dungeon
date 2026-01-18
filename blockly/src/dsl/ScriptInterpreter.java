@@ -63,6 +63,14 @@ public class ScriptInterpreter {
       Integer variableValue = ExpressionResolver.ResolveExpression(setVariableStmt.getVariableValue(), symbolTable);
       symbolTable.add(variableName, variableValue);
 
+    } else if (stmt instanceof SwitchStmt switchStmt){
+      String variableValue = Integer.toString(symbolTable.resolve(switchStmt.variableSymbol));
+      List<Stmt> statements = switchStmt.getCaseStatementsByVariableValue(variableValue);
+      SymbolTable childSymbolTable = new SymbolTable(symbolTable);
+      for (Stmt s : statements) {
+        execute(s, childSymbolTable);
+      }
+
     } else {
       throw new IllegalArgumentException("Unknown statement: " + stmt);
     }
