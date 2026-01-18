@@ -53,7 +53,7 @@ pullStmt
     ;
 
 repeatStmt
-    : REPEAT ID INRANGE '('range'):' NEWLINE+ (statement NEWLINE*)*
+    : REPEAT ID INRANGE '('range'):' NEWLINE+ (statement NEWLINE*)+ END
     ;
 
 range
