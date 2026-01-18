@@ -1,6 +1,13 @@
 package dsl;
 
 import coderunner.BlocklyCommands;
+import coderunner.ExpressionType;
+import dsl.auxiliary.ExpressionResolver;
+import dsl.auxiliary.SymbolTable;
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 
 public class ScriptInterpreter {
 
@@ -15,13 +22,15 @@ public class ScriptInterpreter {
   }
 
   public void run(Program program) {
+    SymbolTable symbolTable = new SymbolTable();
     for (Stmt stmt : program.statements()) {
-      execute(stmt);
+      execute(stmt, symbolTable);
       sleepIfNeeded();
     }
   }
 
-  private void execute(Stmt stmt) {
+
+  private void execute(Stmt stmt, SymbolTable symbolTable) {
     if (stmt instanceof MoveStmt) {
       BlocklyCommands.move();
 
@@ -32,8 +41,9 @@ public class ScriptInterpreter {
       BlocklyCommands.pickup();
 
     } else if (stmt instanceof RepeatStmt r) {
+      SymbolTable childSymbolTable = new SymbolTable(symbolTable);
       for (int i = 0; i < r.getTimes(); i++) {
-        for (Stmt s : r.getBody()) execute(s);
+        for (Stmt s : r.getBody()) execute(s, childSymbolTable);
       }
 
     } else if (stmt instanceof UseStmt u) {
@@ -47,8 +57,13 @@ public class ScriptInterpreter {
 
     } else if (stmt instanceof ShootFireballStmt) {
       BlocklyCommands.shootFireball();
-    }
-    else {
+
+    } else if (stmt instanceof SetVariableStmt setVariableStmt) {
+      String variableName = setVariableStmt.getVariableName();
+      Integer variableValue = ExpressionResolver.ResolveExpression(setVariableStmt.getVariableValue(), symbolTable);
+      symbolTable.add(variableName, variableValue);
+
+    } else {
       throw new IllegalArgumentException("Unknown statement: " + stmt);
     }
   }
