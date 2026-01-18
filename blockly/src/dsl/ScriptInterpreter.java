@@ -8,6 +8,8 @@ import dsl.auxiliary.SymbolTable;
 import java.util.HashMap;
 import java.util.List;
 import coderunner.Direction;
+import coderunner.Direction;
+import dsl.statements.*;
 
 public class ScriptInterpreter implements ConditionContext {
 

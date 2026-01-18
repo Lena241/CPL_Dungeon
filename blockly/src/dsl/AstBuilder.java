@@ -1,6 +1,9 @@
 package dsl;
 
 import coderunner.Direction;
+import dsl.expr.ActiveExpr;
+import dsl.expr.Expr;
+import dsl.statements.*;
 
 import java.util.ArrayList;
 import java.util.List;
