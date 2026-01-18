@@ -45,7 +45,7 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
   }
 
   public Object visitSetVariableStmt(dsl.DungeonDSLParser.SetVariableStmtContext ctx){
-    String variable_name = ctx.VAR_NAME().getText();
+    String variable_name = ctx.ID().getText();
     ExpressionStmt value = (ExpressionStmt) this.visitExpressionRootStmt(ctx.expressionRoot());
 
     return new SetVariableStmt(variable_name, value);
@@ -94,8 +94,8 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
   public Object visitExpressionLeafStmt(dsl.DungeonDSLParser.ExpressionLeafContext ctx){
 
 
-    if (ctx.VAR_NAME() != null) {
-      String variable_name = ctx.VAR_NAME().getText();
+    if (ctx.ID() != null) {
+      String variable_name = ctx.ID().getText();
       return new ExpressionStmt(variable_name, true);
     } else if (ctx.INT() != null) {
       String value = ctx.INT().getText();
@@ -121,7 +121,7 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
   }
 
   public Object visitSwitchStmt(dsl.DungeonDSLParser.SwitchStmtContext ctx){
-    String variableSymbol = ctx.VAR_NAME().getText();
+    String variableSymbol = ctx.ID().getText();
     List<CaseStmt> caseStmtList = new ArrayList<>();
 
     List<Stmt> defaultStatements = ctx.defaultStmt().statement().stream().map(s -> (Stmt) visit(s)).toList();

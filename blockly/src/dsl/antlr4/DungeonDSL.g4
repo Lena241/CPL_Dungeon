@@ -96,20 +96,20 @@ block
   ;
 
 switchStmt
-    : SWITCH '(' VAR_NAME ')' ':' NEWLINE+ (caseStmt NEWLINE*)* (defaultStmt NEWLINE*)? END;
+    : SWITCH '(' ID ')' ':' NEWLINE+ (caseStmt NEWLINE*)* (defaultStmt NEWLINE*)? END;
 
 caseStmt
     : CASE caseValueStmt ':' NEWLINE+ (statement NEWLINE*)*;
 
 caseValueStmt
-    : VAR_NAME
+    : ID
     | INT;
 
 defaultStmt
     : DEFAULT ':' NEWLINE+ (statement NEWLINE*)*;
 
 setVariableStmt
-    : VAR_NAME '=' expressionRoot;
+    : ID '=' expressionRoot;
 
 expressionRoot
     : expressionFirstOrder;
@@ -126,7 +126,7 @@ expressionSecondOrder
 
 
 expressionLeaf
-    : VAR_NAME
+    : ID
     | INT
     | '(' expressionRoot ')';
 
@@ -157,7 +157,6 @@ SWITCH  : 'switch';
 CASE    : 'case';
 DEFAULT : 'default';
 
-VAR_NAME : [a-zA-Z]+[a-zA-Z0-9]*;
 STRING  : '"' ~["]* '"';
 BOOLEAN : 'true'
         | 'false';

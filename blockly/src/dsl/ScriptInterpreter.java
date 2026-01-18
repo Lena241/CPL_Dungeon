@@ -58,7 +58,7 @@ public class ScriptInterpreter implements ConditionContext {
 
   } else if (stmt instanceof RepeatStmt r) {
     SymbolTable childSymbolTable = new SymbolTable(symbolTable);
-      for (int i = 0; i < r.getTimes(); i++) {
+      for (int i = 0; i < r.getGoal(); i++) {
         for (Stmt s : r.getBody()) execute(s, childSymbolTable);
       }
 
