@@ -174,7 +174,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "direction_here",
-    message0: "here",
+    message0: "hier",
     output: "Direction",
     colour: 200
   },

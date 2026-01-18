@@ -1,5 +1,6 @@
 package dsl;
 
+import dsl.antlr4.*;
 import dsl.statements.Program;
 import org.antlr.v4.runtime.*;
 
@@ -7,11 +8,11 @@ public class DungeonDslParserFacade {
 
   public Program parse(String source) {
     CharStream input = CharStreams.fromString(source);
-    dsl.DungeonDSLLexer lexer = new dsl.DungeonDSLLexer(input);
+    DungeonDSLLexer lexer = new DungeonDSLLexer(input);
     CommonTokenStream tokens = new CommonTokenStream(lexer);
-    dsl.DungeonDSLParser parser = new dsl.DungeonDSLParser(tokens);
+    DungeonDSLParser parser = new DungeonDSLParser(tokens);
 
-    dsl.DungeonDSLParser.ProgramContext tree = parser.program();
+    DungeonDSLParser.ProgramContext tree = parser.program();
 
     AstBuilder builder = new AstBuilder();
     return builder.buildProgram(tree);

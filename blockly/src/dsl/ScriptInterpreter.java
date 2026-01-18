@@ -50,7 +50,9 @@ public class ScriptInterpreter implements ConditionContext {
     }
 
     else if (stmt instanceof RepeatStmt r) {
-      for (int i = 0; i < r.getTimes(); i++) {
+      //TODO instead of i use ID (symboltabelle)
+      //if ID does not exist, create new local ID with startvalue 0
+      for (int i = 0; i < r.getGoal(); i++) {
         for (Stmt s : r.getBody()) execute(s);
       }
 

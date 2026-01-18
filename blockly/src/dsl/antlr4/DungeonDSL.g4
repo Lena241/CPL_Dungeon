@@ -53,8 +53,12 @@ pullStmt
     ;
 
 repeatStmt
-    : REPEAT INT ':' NEWLINE+ (statement NEWLINE*)* END
+    : REPEAT ID INRANGE '('range'):' NEWLINE+ (statement NEWLINE*)*
     ;
+
+range
+   :  INT
+   ;
 
 ifStmt
   : IF condition ':' NEWLINE+ block
@@ -122,7 +126,8 @@ NOT: 'not';
 INT     : DIGIT+;
 NUMBER  : DIGIT+ ([.,] DIGIT+)? ;
 
-REPEAT  : 'repeat';
+REPEAT  : 'for';
+INRANGE : 'in range';
 IF: 'if';
 ELSE: 'else';
 
