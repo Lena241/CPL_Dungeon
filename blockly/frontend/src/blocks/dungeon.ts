@@ -17,7 +17,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   // ---------------------- Movement ----------------------
   {
     type: "move",
-    message0: "move",
+    message0: "Gehe",
     previousStatement: null,
     nextStatement: null,
     colour: 180,
@@ -25,7 +25,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "rotate",
-    message0: "rotate %1",
+    message0: "Drehe %1",
     args0: [
       {
         type: "input_value",
@@ -150,25 +150,25 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   // ---------------------- Directions ----------------------
   {
     type: "direction_up",
-    message0: "up",
+    message0: "vorne",
     output: "Direction",
     colour: 200,
   },
   {
     type: "direction_down",
-    message0: "down",
+    message0: "hinten",
     output: "Direction",
     colour: 200
   },
   {
     type: "direction_left",
-    message0: "left",
+    message0: "links",
     output: "Direction",
     colour: 200
   },
   {
     type: "direction_right",
-    message0: "right",
+    message0: "rechts",
     output: "Direction",
     colour: 200
   },
@@ -183,7 +183,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     type: "var_array",
     previousStatement: null,
     nextStatement: null,
-    message0: "create array %1",
+    message0: "Array erstellen %1",
     args0: [
       {
         type: "field_variable",
@@ -191,7 +191,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
       },
     ],
-    message1: "with size %1",
+    message1: "mit der Größe %1",
     args1: [
       {
         type: "field_number",
@@ -208,7 +208,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     type: "array_set",
     previousStatement: null,
     nextStatement: null,
-    message0: "in array %1",
+    message0: "In Array %1",
     args0: [
       {
         type: "field_variable",
@@ -216,7 +216,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
       },
     ],
-    message1: "with value %1",
+    message1: "den Wert %1",
     args1: [
       {
         type: "input_value",
@@ -224,7 +224,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         check: ["Variable", "Number", "Expression"],
       },
     ],
-    message2: "at index %1 setzen",
+    message2: "an Index %1 setzen",
     args2: [
       {
         type: "input_value",
@@ -237,7 +237,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "array_get",
-    message0: "get value from array %1",
+    message0: "Hole Wert aus Array %1",
     args0: [
       {
         type: "field_variable",
@@ -245,7 +245,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
       },
     ],
-    message1: "from index %1",
+    message1: "von dem Index %1",
     args1: [
       {
         type: "input_value",
@@ -258,7 +258,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "array_length",
-    message0: "length of array %1",
+    message0: "Länge von Array %1",
     args0: [
       {
         type: "field_variable",
@@ -396,7 +396,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "not_condition",
-    message0: "not %1",
+    message0: "nicht %1",
     args0: [
       {
         type: "input_value",
@@ -440,7 +440,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   // ---------------------- Conditions ----------------------
   {
     type: "logic_wall_direction",
-    message0: "wall %1",
+    message0: "Wand %1",
     output: "Boolean",
     tooltip: "Überprüfe, ob eine Wand in die Richtung ist",
     args0: [
@@ -454,7 +454,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "logic_floor_direction",
-    message0: "floor %1",
+    message0: "Boden %1",
     output: "Boolean",
     tooltip: "Überprüfe, ob ein Boden in die Richtung ist",
     args0: [
@@ -468,7 +468,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "logic_pit_direction",
-    message0: "pit %1",
+    message0: "Loch %1",
     output: "Boolean",
     tooltip: "Überprüfe, ob ein Loch in die Richtung ist",
     args0: [
@@ -482,7 +482,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
   },
   {
     type: "logic_monster_direction",
-    message0: "monster %1",
+    message0: "Monster %1",
     output: "Boolean",
     tooltip: "Überprüfe, ob ein Monster in die Richtung ist",
     args0: [
