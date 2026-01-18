@@ -55,7 +55,7 @@ pullStmt
     ;
 
 repeatStmt
-    : REPEAT ID INRANGE '('range'):' NEWLINE+ (statement NEWLINE*)+ END
+    : REPEAT ID INRANGE'('range'):' NEWLINE+ (statement NEWLINE*)+ END
     ;
 
 range
@@ -157,12 +157,16 @@ SWITCH  : 'switch';
 CASE    : 'case';
 DEFAULT : 'default';
 
+REPEAT  : 'for';
+
+ID      : (CHAR | '_')(CHAR | DIGIT | '_')*;
+
 VAR_NAME : [a-zA-Z]+[a-zA-Z0-9]*;
 STRING  : '"' ~["]* '"';
 BOOLEAN : 'true'
         | 'false';
 
-ACTIVE: 'activ';
+ACTIVE: 'active';
 
 AND: 'and';
 OR: 'or';
@@ -171,7 +175,6 @@ NOT: 'not';
 INT     : DIGIT+;
 NUMBER  : DIGIT+ ([.,] DIGIT+)? ;
 
-REPEAT  : 'for';
 INRANGE : 'in range';
 IF: 'if';
 ELSE: 'else';
@@ -179,8 +182,6 @@ ELSE: 'else';
 NEWLINE : ('\r'? '\n')+ ;
 WS      : [ \t\r]+ -> skip ;
 COMMENT : '#' ~[\r\n]* -> skip;
-
-ID      : (CHAR | '_')(CHAR | DIGIT | '_')*;
 
 fragment CHAR   : [a-zA-Z];
 fragment DIGIT : [0-9] ;
