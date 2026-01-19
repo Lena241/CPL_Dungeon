@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.*;
 public class DungeonDslParserFacade {
 
   public Program parse(String source) {
-    System.out.println(source);
     CharStream input = CharStreams.fromString(source);
     DungeonDSLLexer lexer = new DungeonDSLLexer(input);
     CommonTokenStream tokens = new CommonTokenStream(lexer);

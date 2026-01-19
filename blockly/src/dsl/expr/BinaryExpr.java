@@ -35,6 +35,7 @@ public final class BinaryExpr extends Expr {
     this.OperatorToPossibleTypes.put(">=", new ArrayList<>(List.of(ValueType.Integer)));
     this.OperatorToPossibleTypes.put(">", new ArrayList<>(List.of(ValueType.Integer)));
     this.OperatorToPossibleTypes.put("<", new ArrayList<>(List.of(ValueType.Integer)));
+    this.OperatorToPossibleTypes.put("!=", new ArrayList<>(List.of(ValueType.Integer)));
 
     this.OperatorToOutputType.put("and", ValueType.Boolean);
     this.OperatorToOutputType.put("or", ValueType.Boolean);
@@ -43,6 +44,7 @@ public final class BinaryExpr extends Expr {
     this.OperatorToOutputType.put("*", ValueType.Integer);
     this.OperatorToOutputType.put("/", ValueType.Integer);
     this.OperatorToOutputType.put("==", ValueType.Boolean);
+    this.OperatorToOutputType.put("!=", ValueType.Boolean);
     this.OperatorToOutputType.put(">=", ValueType.Boolean);
     this.OperatorToOutputType.put("<=", ValueType.Boolean);
     this.OperatorToOutputType.put(">", ValueType.Boolean);

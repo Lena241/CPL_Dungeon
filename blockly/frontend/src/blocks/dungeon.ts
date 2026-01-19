@@ -422,8 +422,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         type: "field_dropdown",
         name: "LOGIC_OPERATOR",
         options: [
-          ["und", "&&"],
-          ["oder", "||"],
+          ["und", "and"],
+          ["oder", "or"],
         ],
       },
       {
