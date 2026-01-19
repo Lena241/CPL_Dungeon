@@ -2,10 +2,6 @@ grammar DungeonDSL;
 
 options { visitor = true; }
 
-@header {
-package dsl;
-}
-
 // ---------- Parser rules ----------
 
 program
@@ -54,20 +50,24 @@ pullStmt
     :   ZIEHEN '(' ')'
     ;
 
-repeatStmt
-    : REPEAT ID INRANGE '('range'):' NEWLINE+ (statement NEWLINE*)+ END
-    ;
-
-range
-   :  INT
-   ;
-
 ifStmt
   : IF condition ':' NEWLINE+ block
     (ELSE IF condition ':' NEWLINE+ block)*
     (ELSE ':' NEWLINE+ block)?
     END
   ;
+
+repeatStmt
+    : REPEAT ID INRANGE LPAREN range RPAREN COLON NEWLINE+ block END
+    ;
+
+whileStmt
+    : WHILE condition ':' NEWLINE+ block END
+    ;
+
+range
+   :  INT
+   ;
 
 condition
   : orExpr
@@ -89,6 +89,10 @@ notExpr
 
 predicate
   : ACTIVE '(' direction ')'
+  | WALL  '(' direction ')'
+  | FLOOR '(' direction ')'
+  | PIT   '(' direction ')'
+  | BOOLEAN
   ;
 
 block
@@ -140,6 +144,30 @@ direction
 
 // ---------- Lexer rules ----------
 
+// --- Punctuation ---
+LPAREN : '(';
+RPAREN : ')';
+COLON  : ':';
+COMMA  : ',';
+
+// --- Control Flow ---
+IF: 'if';
+ELSE: 'else';
+END: 'end';
+REPEAT  : 'for';
+WHILE : 'while';
+
+// --- Boolean logic ---
+AND: 'and';
+OR: 'or';
+NOT: 'not';
+
+// --- Switch / Case ---
+SWITCH  : 'switch';
+CASE    : 'case';
+DEFAULT : 'default';
+
+// --- Commands / DSL functions ---
 GEHEN   : 'gehen';
 DREHEN  : 'drehen';
 AUFHEBEN : 'aufheben';
@@ -147,43 +175,44 @@ BENUTZEN : 'benutzen';
 FEUERBALL : 'feuerball';
 SCHIEBEN : 'schieben';
 ZIEHEN : 'ziehen';
+ACTIVE: 'active';
+WALL  : 'wall';
+FLOOR : 'floor';
+PIT   : 'pit';
+
+
+// --- Directions ---
 LINKS   : 'links';
 RECHTS  : 'rechts';
 VORNE   : 'vorne';
 HINTER  : 'hinter';
 HIER    : 'hier';
-END     : 'end';
-SWITCH  : 'switch';
-CASE    : 'case';
-DEFAULT : 'default';
 
-STRING  : '"' ~["]* '"';
+// --- Literals ---
 BOOLEAN : 'true'
         | 'false';
+STRING  : '"' ~["]* '"';
 
-ACTIVE: 'activ';
+// --- Identifiers ---
+ID      : (CHAR | '_')(CHAR | DIGIT | '_')*;
 
-AND: 'and';
-OR: 'or';
-NOT: 'not';
-
+// --- Numbers ---
 INT     : DIGIT+;
 NUMBER  : DIGIT+ ([.,] DIGIT+)? ;
 
-REPEAT  : 'for';
+// --- Special phrase token ---
 INRANGE : 'in range';
-IF: 'if';
-ELSE: 'else';
 
+// --- Whitespace / Comments ---
 NEWLINE : ('\r'? '\n')+ ;
 WS      : [ \t\r]+ -> skip ;
 COMMENT : '#' ~[\r\n]* -> skip;
 
-ID      : (CHAR | '_')(CHAR | DIGIT | '_')*;
-
+// --- Fragments ---
 fragment CHAR   : [a-zA-Z];
 fragment DIGIT : [0-9] ;
 
+// --- Operators ---
 FIRST_ORDER_OPERATOR
     : '+'
     | '-';
@@ -191,3 +220,4 @@ FIRST_ORDER_OPERATOR
 SECOND_ORDER_OPERATOR
     : '*'
     | '/';
+

@@ -28,10 +28,3 @@ export function rotate(
 
   return `drehen(${dir})\n`;
 }
-
-export function pickup(
-  _block: Blockly.Block,
-  _generator: Blockly.Generator
-): string {
-  return "abholen()\n";
-}

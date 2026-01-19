@@ -3,10 +3,23 @@ import { Order } from "../dungeon_dsl.ts";
 
 export function repeat(block: Blockly.Block, generator: Blockly.Generator): string {
   const times = generator.valueToCode(block, "TIMES", Order.NONE) || "0";
-  const body  = generator.statementToCode(block, "DO");
-  const safeBody = body && body.trim().length ? body : "\n";
-  const repeat_var = block.id.replace(/[^a-zA-Z_]/g, '');
-  return `for ${repeat_var} in range (${times}):\n${safeBody}\n`;
+  const repeat_var = block.id.replace(/[^a-zA-Z_]/g, "");
+
+  let body = generator.statementToCode(block, "DO");
+  body = body && body.trim().length ? body : "";
+  body = body.replace(/[ \t\r\n]+$/, "") + "\n";
+
+  return `for ${repeat_var} in range(${times}):\n${body}end\n`;
+}
+
+export function while_loop(block: Blockly.Block, generator: Blockly.Generator): string {
+  const cond = (generator.valueToCode(block, "CONDITION", Order.NONE) || "false").trim();
+
+  let body = generator.statementToCode(block, "DO");
+  body = body && body.trim().length ? body : "";
+  body = body.replace(/[ \t\r\n]+$/, "") + "\n";
+
+  return `while ${cond}:\n${body}end\n`;
 }
 
 

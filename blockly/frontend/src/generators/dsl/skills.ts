@@ -20,3 +20,7 @@ export function pull(_block: Blockly.Block, _generator: Blockly.Generator) {
 export function fireball(_block: Blockly.Block, _generator: Blockly.Generator) {
   return "feuerball()\n";
 }
+
+export function pickup(_block: Blockly.Block, _generator: Blockly.Generator) {
+  return "aufheben()\n";
+}
