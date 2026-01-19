@@ -1,11 +1,13 @@
 package dsl.statements;
 
+import dsl.expr.Expr;
+
 public class SetVariableStmt implements Stmt{
 
   private final String variable_name;
-  private final ExpressionStmt value;
+  private final Expr value;
 
-  public SetVariableStmt(String variable_name, ExpressionStmt value){
+  public SetVariableStmt(String variable_name, Expr value){
     this.variable_name = variable_name;
     this.value = value;
   }
@@ -14,7 +16,7 @@ public class SetVariableStmt implements Stmt{
     return this.variable_name;
   }
 
-  public ExpressionStmt getVariableValue(){
+  public Expr getVariableValue(){
     return this.value;
   }
 

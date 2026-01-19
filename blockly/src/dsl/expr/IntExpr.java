@@ -1,6 +1,6 @@
+
 package dsl.expr;
 
-import coderunner.Direction;
 import dsl.ConditionContext;
 import dsl.auxiliary.SymbolTable;
 import dsl.auxiliary.Value;
@@ -8,29 +8,31 @@ import dsl.auxiliary.ValueType;
 
 import java.util.List;
 
-public final class ActiveExpr extends Expr {
-  private final Direction direction;
+public final class IntExpr extends Expr {
+  private final Integer value;
 
-  public ActiveExpr(Direction direction) {
-    this.direction = direction;
-  }
-
-  public Direction getDirection() {
-    return direction;
+  public IntExpr(Integer value) {
+    this.value = value;
   }
 
   @Override
   public Value eval(ConditionContext ctx, SymbolTable symbolTable, List<ValueType> possibleResultTypes) {
-    var result =  new Value(ctx.isActive(direction), ValueType.Boolean);
-    if (possibleResultTypes.contains(ValueType.Boolean)) {
+
+
+    var result = new Value(value, ValueType.Integer);
+    if (possibleResultTypes.contains(result.getType())) {
       return result;
     } else {
       throw new IllegalArgumentException("Wrong Type!");
     }
   }
 
+  public Integer getValue(){
+    return this.value;
+  }
+
   @Override
   public String toString() {
-    return "ActiveExpr(" + direction + ")";
+    return "IntExpr(" + value + ")";
   }
 }

@@ -38,6 +38,14 @@ export function logic_pit_direction(block: Blockly.Block, generator: Blockly.Gen
   return [`pit(${dir})`, Order.NONE];
 }
 
+export function usual_condition(block: Blockly.Block, generator: Blockly.Generator){
+  const a = generator.valueToCode(block, "INPUT_A", Order.NONE) || "false";
+  const operator = block.getFieldValue("OPERATOR");
+  const b = generator.valueToCode(block, "INPUT_B", Order.NONE) || "false";
+
+  return [a + " " + operator + " "+ b, Order.NONE]
+}
+
 export function controls_if(block: Blockly.Block, generator: Blockly.Generator) {
   let code = "";
 

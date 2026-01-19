@@ -2,6 +2,8 @@ package dsl;
 
 import coderunner.Direction;
 import dsl.antlr4.*;
+import dsl.antlr4.DungeonDSLBaseVisitor;
+import dsl.antlr4.DungeonDSLParser;
 import dsl.expr.*;
 import dsl.statements.*;
 
@@ -77,53 +79,53 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
 
   @Override
   public Object visitSetVariableStmt(DungeonDSLParser.SetVariableStmtContext ctx) {
-    String variableName = ctx.VAR_NAME().getText();
-    ExpressionStmt value = (ExpressionStmt) visitExpressionRootStmt(ctx.expressionRoot());
+    String variableName = ctx.ID().getText();
+    Expr value = (Expr) visitExpression(ctx.expression());
     return new SetVariableStmt(variableName, value);
   }
 
-  public Object visitExpressionRootStmt(DungeonDSLParser.ExpressionRootContext ctx) {
-    if (ctx.expressionFirstOrder() != null) {
-      return visitExpressionFirstOrderStmt(ctx.expressionFirstOrder());
+  public Object visitExpressionRootStmt(DungeonDSLParser.ExpressionRootStmtContext ctx) {
+    if (ctx.expressionFirstOrderStmt() != null) {
+      return visitExpressionFirstOrderStmt(ctx.expressionFirstOrderStmt());
     }
     throw new IllegalArgumentException("Expression without value!");
   }
 
-  public Object visitExpressionFirstOrderStmt(DungeonDSLParser.ExpressionFirstOrderContext ctx) {
-    if (ctx.expressionFirstOrder().size() == 2) {
-      var parts = ctx.expressionFirstOrder();
-      ExpressionStmt left = (ExpressionStmt) visitExpressionFirstOrderStmt(parts.get(0));
-      ExpressionStmt right = (ExpressionStmt) visitExpressionFirstOrderStmt(parts.get(1));
-      return new ExpressionStmt(left, right, ctx.FIRST_ORDER_OPERATOR().getText());
+  public Object visitExpressionFirstOrderStmt(DungeonDSLParser.ExpressionFirstOrderStmtContext ctx) {
+    if (ctx.expressionFirstOrderStmt().size() == 2) {
+      var parts = ctx.expressionFirstOrderStmt();
+      Expr left = (Expr) visitExpressionFirstOrderStmt(parts.get(0));
+      Expr right = (Expr) visitExpressionFirstOrderStmt(parts.get(1));
+      return new BinaryExpr(left, right, ctx.FIRST_ORDER_OPERATOR().getText());
     }
-    if (ctx.expressionSecondOrder() != null) {
-      return visitExpressionSecondOrderStmt(ctx.expressionSecondOrder());
-    }
-    throw new IllegalArgumentException("Expression without value!");
-  }
-
-  public Object visitExpressionSecondOrderStmt(DungeonDSLParser.ExpressionSecondOrderContext ctx) {
-    if (ctx.expressionSecondOrder().size() == 2) {
-      var parts = ctx.expressionSecondOrder();
-      ExpressionStmt left = (ExpressionStmt) visitExpressionSecondOrderStmt(parts.get(0));
-      ExpressionStmt right = (ExpressionStmt) visitExpressionSecondOrderStmt(parts.get(1));
-      return new ExpressionStmt(left, right, ctx.SECOND_ORDER_OPERATOR().getText());
-    }
-    if (ctx.expressionLeaf() != null) {
-      return visitExpressionLeafStmt(ctx.expressionLeaf());
+    if (ctx.expressionSecondOrderStmt() != null) {
+      return visitExpressionSecondOrderStmt(ctx.expressionSecondOrderStmt());
     }
     throw new IllegalArgumentException("Expression without value!");
   }
 
-  public Object visitExpressionLeafStmt(DungeonDSLParser.ExpressionLeafContext ctx) {
-    if (ctx.VAR_NAME() != null) {
-      return new ExpressionStmt(ctx.VAR_NAME().getText(), true);
+  public Object visitExpressionSecondOrderStmt(DungeonDSLParser.ExpressionSecondOrderStmtContext ctx) {
+    if (ctx.expressionSecondOrderStmt().size() == 2) {
+      var parts = ctx.expressionSecondOrderStmt();
+      Expr left = (Expr) visitExpressionSecondOrderStmt(parts.get(0));
+      Expr right = (Expr) visitExpressionSecondOrderStmt(parts.get(1));
+      return new BinaryExpr(left, right, ctx.SECOND_ORDER_OPERATOR().getText());
+    }
+    if (ctx.expressionLeafStmt() != null) {
+      return visitExpressionLeafStmt(ctx.expressionLeafStmt());
+    }
+    throw new IllegalArgumentException("Expression without value!");
+  }
+
+  public Object visitExpressionLeafStmt(DungeonDSLParser.ExpressionLeafStmtContext ctx) {
+    if (ctx.ID() != null) {
+      return new IDExpr(ctx.ID().getText());
     }
     if (ctx.INT() != null) {
-      return new ExpressionStmt(ctx.INT().getText(), false);
+      return new IntExpr(Integer.parseInt(ctx.INT().getText()));
     }
-    if (ctx.expressionRoot() != null) {
-      return visitExpressionRootStmt(ctx.expressionRoot());
+    if (ctx.expressionRootStmt() != null) {
+      return visitExpressionRootStmt(ctx.expressionRootStmt());
     }
     throw new IllegalArgumentException("Expression without value!");
   }
@@ -131,12 +133,12 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
 
   @Override
   public Object visitRepeatStmt(DungeonDSLParser.RepeatStmtContext ctx) {
-    int times = Integer.parseInt(ctx.range().INT().getText());
+    Expr expression = ctx.range().INT() == null ? new IDExpr(ctx.range().ID().getText()) : new IntExpr(Integer.parseInt(ctx.range().INT().getText()));
     List<Stmt> body = ctx.block().statement().stream()
       .map(s -> (Stmt) visit(s))
       .collect(Collectors.toList());
 
-    return new RepeatStmt(times, body);
+    return new RepeatStmt(expression, body);
   }
 
   @Override
@@ -148,7 +150,7 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
 
   @Override
   public Object visitSwitchStmt(DungeonDSLParser.SwitchStmtContext ctx) {
-    String variableSymbol = ctx.VAR_NAME().getText();
+    String variableSymbol = ctx.ID().getText();
     List<CaseStmt> caseStmtList = new ArrayList<>();
 
     List<Stmt> defaultStatements = ctx.defaultStmt().statement().stream()
@@ -191,6 +193,9 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     return new IfStmt(branches, elseBody);
   }
 
+  public Object visitExpression(DungeonDSLParser.ExpressionContext ctx) {
+    return visit(ctx.condition() != null ? ctx.condition() : ctx.expressionRootStmt());
+  }
 
   @Override
   public Object visitCondition(DungeonDSLParser.ConditionContext ctx) {
@@ -229,6 +234,10 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     if (ctx.condition() != null) {
       return visit(ctx.condition());
     }
+    if(ctx.comparison() != null)
+    {
+      return visit(ctx.comparison());
+    }
     throw new IllegalArgumentException("Ungültiger notExpr: " + ctx.getText());
   }
 
@@ -239,6 +248,12 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
       return new BoolExpr(value);
     }
 
+    if (ctx.ID() != null){
+      String variableSymbol = ctx.ID().getText();
+      return new IDExpr(variableSymbol);
+    }
+
+
     // The rest needs a direction()
     Direction dir = (Direction) visit(ctx.direction());
 
@@ -248,8 +263,31 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     if (ctx.PIT() != null) return new PitExpr(dir);
 
     throw new IllegalArgumentException("Unbekanntes Predicate: " + ctx.getText());
+
+  }
+  @Override
+  public Object visitComparison(DungeonDSLParser.ComparisonContext ctx){
+    if(!ctx.expressionLeafStmt().isEmpty()){
+      Expr left = (Expr) visit(ctx.expressionLeafStmt(0));
+      Expr right = (Expr) visit(ctx.expressionLeafStmt(1));
+      String operator = ctx.COMPARE_OPERATOR().getText();
+      return new BinaryExpr(left, right, operator);
+    } else{
+      Expr left = (Expr) visit(ctx.comparisonPredicate(0));
+      Expr right = (Expr) visit(ctx.comparisonPredicate(1));
+      String operator = ctx.COMPARE_OPERATOR().getText();
+      return new BinaryExpr(left, right, operator);
+    }
   }
 
+  @Override
+  public Object visitComparisonPredicate(DungeonDSLParser.ComparisonPredicateContext ctx){
+    return visit(ctx.condition() != null ? ctx.condition() : ctx.predicate());
+  }
+
+
+
+  private List<Stmt> buildBlock(DungeonDSLParser.BlockContext blockCtx) {
     List<Stmt> stmts = new ArrayList<>();
     for (var sCtx : blockCtx.statement()) {
       stmts.add((Stmt) visit(sCtx));

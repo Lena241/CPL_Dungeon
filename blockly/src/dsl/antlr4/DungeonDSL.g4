@@ -2,6 +2,10 @@ grammar DungeonDSL;
 
 options { visitor = true; }
 
+@header {
+package dsl.antlr4;
+}
+
 // ---------- Parser rules ----------
 
 program
@@ -17,10 +21,10 @@ statement
     | shootFireballStmt
     | pullStmt
     | repeatStmt
-    | whileStmt
     | ifStmt
     | setVariableStmt
     | switchStmt
+    | whileStmt
     ;
 
 moveStmt
@@ -67,8 +71,14 @@ whileStmt
     ;
 
 range
-   :  INT
+   : INT
+   | ID
    ;
+
+expression
+    : expressionRootStmt
+    | condition
+    ;
 
 condition
   : orExpr
@@ -86,6 +96,7 @@ notExpr
   : NOT notExpr
   | predicate
   | '(' condition ')'
+  | comparison
   ;
 
 predicate
@@ -94,6 +105,7 @@ predicate
   | FLOOR '(' direction ')'
   | PIT   '(' direction ')'
   | BOOLEAN
+  | ID
   ;
 
 block
@@ -101,39 +113,47 @@ block
   ;
 
 switchStmt
-    : SWITCH '(' VAR_NAME ')' ':' NEWLINE+ (caseStmt NEWLINE*)* (defaultStmt NEWLINE*)? END;
+    : SWITCH '(' ID ')' ':' NEWLINE+ (caseStmt NEWLINE*)* (defaultStmt NEWLINE*)? END;
 
 caseStmt
     : CASE caseValueStmt ':' NEWLINE+ (statement NEWLINE*)*;
 
 caseValueStmt
-    : VAR_NAME
+    : ID
     | INT;
 
 defaultStmt
     : DEFAULT ':' NEWLINE+ (statement NEWLINE*)*;
 
 setVariableStmt
-    : VAR_NAME '=' expressionRoot;
+    : ID '=' expression;
 
-expressionRoot
-    : expressionFirstOrder;
+expressionRootStmt
+    : expressionFirstOrderStmt;
 
-expressionFirstOrder
-    : expressionSecondOrder
-    | expressionFirstOrder FIRST_ORDER_OPERATOR expressionFirstOrder;
+expressionFirstOrderStmt
+    : expressionSecondOrderStmt
+    | expressionFirstOrderStmt FIRST_ORDER_OPERATOR expressionFirstOrderStmt;
 
 
-expressionSecondOrder
-    : expressionLeaf
-    | expressionSecondOrder SECOND_ORDER_OPERATOR expressionSecondOrder
+expressionSecondOrderStmt
+    : expressionLeafStmt
+    | expressionSecondOrderStmt SECOND_ORDER_OPERATOR expressionSecondOrderStmt
     ;
 
 
-expressionLeaf
-    : VAR_NAME
+expressionLeafStmt
+    : ID
     | INT
-    | '(' expressionRoot ')';
+    | '(' expressionRootStmt ')';
+
+comparison
+    : expressionLeafStmt COMPARE_OPERATOR expressionLeafStmt
+    | comparisonPredicate  COMPARE_OPERATOR comparisonPredicate ;
+
+comparisonPredicate
+    : predicate
+    | '(' condition ')';
 
 direction
     : VORNE
@@ -196,7 +216,6 @@ STRING  : '"' ~["]* '"';
 
 // --- Identifiers ---
 ID      : (CHAR | '_')(CHAR | DIGIT | '_')*;
-VAR_NAME : [a-zA-Z]+[a-zA-Z0-9]*;
 
 // --- Numbers ---
 INT     : DIGIT+;
@@ -214,7 +233,16 @@ COMMENT : '#' ~[\r\n]* -> skip;
 fragment CHAR   : [a-zA-Z];
 fragment DIGIT : [0-9] ;
 
-// --- Operators ---
+// --- Compare Operators ---
+COMPARE_OPERATOR
+    : '=='
+    | '!='
+    | '>='
+    | '<='
+    | '<'
+    | '>'
+    ;
+// --- Calculation Operators ---
 FIRST_ORDER_OPERATOR
     : '+'
     | '-';

@@ -2,10 +2,12 @@ package dsl;
 
 import coderunner.BlocklyCommands;
 import coderunner.Direction;
-import dsl.auxiliary.ExpressionResolver;
 import dsl.auxiliary.SymbolTable;
+import dsl.auxiliary.Value;
+import dsl.auxiliary.ValueType;
 import dsl.statements.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScriptInterpreter implements ConditionContext {
@@ -66,16 +68,16 @@ public class ScriptInterpreter implements ConditionContext {
 
     if (stmt instanceof SetVariableStmt setVariableStmt) {
       String variableName = setVariableStmt.getVariableName();
-      Integer variableValue =
-        ExpressionResolver.ResolveExpression(setVariableStmt.getVariableValue(), symbolTable);
+      Value variableValue = setVariableStmt.getVariableValue().eval(this, symbolTable, new ArrayList<>(List.of(ValueType.Boolean, ValueType.Integer)));
       symbolTable.add(variableName, variableValue);
       return;
     }
 
+    if (stmt instanceof IfStmt i) {
       boolean matched = false;
 
       for (IfBranch b : i.getBranches()) {
-        if (b.getCondition().eval(this)) {
+        if (b.getCondition().evalAsBoolean(this, symbolTable)) {
           matched = true;
 
           // One scope for the chosen branch
@@ -98,6 +100,7 @@ public class ScriptInterpreter implements ConditionContext {
         }
       }
 
+
       return;
     }
 
@@ -105,7 +108,7 @@ public class ScriptInterpreter implements ConditionContext {
       // One scope for the whole repeat block
       SymbolTable loopScope = new SymbolTable(symbolTable);
 
-      for (int i = 0; i < r.getGoal(); i++) {
+      for (int i = 0; i < r.getGoal().evalAsInteger(this, symbolTable); i++) {
         for (Stmt s : r.getBody()) {
           execute(s, loopScope);
           sleepIfNeeded();
@@ -123,7 +126,7 @@ public class ScriptInterpreter implements ConditionContext {
       // IMPORTANT: one scope for the whole while-loop
       SymbolTable whileScope = new SymbolTable(symbolTable);
 
-      while (w.getCondition().eval(this)) {
+      while (w.getCondition().evalAsBoolean(this, whileScope)) {
         if (iterations++ > MAX_ITERATIONS) {
           throw new RuntimeException(
             "While loop exceeded max iterations (possible infinite loop).");
@@ -139,7 +142,7 @@ public class ScriptInterpreter implements ConditionContext {
     }
 
     if (stmt instanceof SwitchStmt switchStmt) {
-      String variableValue = Integer.toString(symbolTable.resolve(switchStmt.getVariableSymbol()));
+      String variableValue = Integer.toString((Integer)symbolTable.resolve(switchStmt.getVariableSymbol()).getValue());
       List<Stmt> statements = switchStmt.getCaseStatementsByVariableValue(variableValue);
 
       SymbolTable switchScope = new SymbolTable(symbolTable);

@@ -1,6 +1,9 @@
 import coderunner.ExpressionType;
 import com.ibm.icu.impl.Assert;
 import dsl.*;
+import dsl.expr.BinaryExpr;
+import dsl.expr.IDExpr;
+import dsl.expr.IntExpr;
 import dsl.statements.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +31,8 @@ public class TestDungeonDslParserFacade {
     Assert.assrt(output.statements().get(0).getClass() == SetVariableStmt.class);
     SetVariableStmt setVariableStmt = (SetVariableStmt) output.statements().get(0);
     Assert.assrt(setVariableStmt.getVariableName().equals("a"));
-    Assert.assrt(setVariableStmt.getVariableValue().getInteger().equals("2"));
-    Assert.assrt(setVariableStmt.getVariableValue().getExpressionType() == ExpressionType.ContainsInteger);
+    Assert.assrt(setVariableStmt.getVariableValue().getClass() == IntExpr.class);
+    Assert.assrt(((IntExpr)setVariableStmt.getVariableValue()).getValue() == 2);
   }
   @Test
   public void TestCreateVariableVariableExpression(){
@@ -37,35 +40,54 @@ public class TestDungeonDslParserFacade {
     Assert.assrt(output.statements().get(0).getClass() == SetVariableStmt.class);
     SetVariableStmt setVariableStmt = (SetVariableStmt) output.statements().get(0);
     Assert.assrt(setVariableStmt.getVariableName().equals("a"));
-    Assert.assrt(setVariableStmt.getVariableValue().getVariable().equals("b"));
-    Assert.assrt(setVariableStmt.getVariableValue().getExpressionType() == ExpressionType.ResolveVariable);
+    Assert.assrt(setVariableStmt.getVariableValue().getClass() == IDExpr.class);
+    Assert.assrt(((IDExpr)setVariableStmt.getVariableValue()).getVariableSymbol().equals("b"));
   }
   @Test
   public void TestCreateVariableOperatorExpression(){
     Program output = this.dungeonDslParserFacade.parse("a = 2 + b");
     Assert.assrt(output.statements().get(0).getClass() == SetVariableStmt.class);
+
     SetVariableStmt setVariableStmt = (SetVariableStmt) output.statements().get(0);
     Assert.assrt(setVariableStmt.getVariableName().equals("a"));
-    Assert.assrt(setVariableStmt.getVariableValue().getLeftExpression().getInteger().equals("2"));
-    Assert.assrt(setVariableStmt.getVariableValue().getLeftExpression().getExpressionType() == ExpressionType.ContainsInteger);
-    Assert.assrt(setVariableStmt.getVariableValue().getRightExpression().getVariable().equals("b"));
-    Assert.assrt(setVariableStmt.getVariableValue().getRightExpression().getExpressionType() == ExpressionType.ResolveVariable);
-    Assert.assrt(setVariableStmt.getVariableValue().getExpressionType() == ExpressionType.ApplyOperator);
+    Assert.assrt(setVariableStmt.getVariableValue().getClass() == BinaryExpr.class);
+
+    BinaryExpr binaryExpr = (BinaryExpr)setVariableStmt.getVariableValue();
+    Assert.assrt(binaryExpr.getOp().equals("+"));
+    Assert.assrt(binaryExpr.getLeft().getClass() == IntExpr.class);
+    Assert.assrt(binaryExpr.getRight().getClass() == IDExpr.class);
+
+    IntExpr left = (IntExpr) binaryExpr.getLeft();
+    IDExpr right = (IDExpr) binaryExpr.getRight();
+    Assert.assrt(left.getValue() == 2);
+    Assert.assrt(right.getVariableSymbol().equals("b"));
   }
   @Test
   public void TestCreateVariableNestedOperatorExpression(){
     Program output = this.dungeonDslParserFacade.parse("a = 3 * 2 + b");
     Assert.assrt(output.statements().get(0).getClass() == SetVariableStmt.class);
+
     SetVariableStmt setVariableStmt = (SetVariableStmt) output.statements().get(0);
     Assert.assrt(setVariableStmt.getVariableName().equals("a"));
-    Assert.assrt(setVariableStmt.getVariableValue().getLeftExpression().getExpressionType() == ExpressionType.ApplyOperator);
-    Assert.assrt(setVariableStmt.getVariableValue().getLeftExpression().getLeftExpression().getExpressionType() == ExpressionType.ContainsInteger);
-    Assert.assrt(setVariableStmt.getVariableValue().getLeftExpression().getLeftExpression().getInteger().equals("3"));
-    Assert.assrt(setVariableStmt.getVariableValue().getLeftExpression().getRightExpression().getExpressionType() == ExpressionType.ContainsInteger);
-    Assert.assrt(setVariableStmt.getVariableValue().getLeftExpression().getRightExpression().getInteger().equals("2"));
-    Assert.assrt(setVariableStmt.getVariableValue().getRightExpression().getVariable().equals("b"));
-    Assert.assrt(setVariableStmt.getVariableValue().getRightExpression().getExpressionType() == ExpressionType.ResolveVariable);
-    Assert.assrt(setVariableStmt.getVariableValue().getExpressionType() == ExpressionType.ApplyOperator);
+    Assert.assrt(setVariableStmt.getVariableValue().getClass() == BinaryExpr.class);
+
+    BinaryExpr secondOrderOperatorBinaryExpr = (BinaryExpr)setVariableStmt.getVariableValue();
+    Assert.assrt(secondOrderOperatorBinaryExpr.getOp().equals("+"));
+    Assert.assrt(secondOrderOperatorBinaryExpr.getLeft().getClass() == BinaryExpr.class);
+    Assert.assrt(secondOrderOperatorBinaryExpr.getRight().getClass() == IDExpr.class);
+
+    IDExpr right = (IDExpr) secondOrderOperatorBinaryExpr.getRight();
+    Assert.assrt(right.getVariableSymbol().equals("b"));
+
+    BinaryExpr firstOrderOperatorBinaryExpr = (BinaryExpr) secondOrderOperatorBinaryExpr.getLeft();
+    Assert.assrt(firstOrderOperatorBinaryExpr.getOp().equals("*"));
+    Assert.assrt(firstOrderOperatorBinaryExpr.getLeft().getClass() == IntExpr.class);
+    Assert.assrt(firstOrderOperatorBinaryExpr.getRight().getClass() == IntExpr.class);
+
+    IntExpr left = (IntExpr) firstOrderOperatorBinaryExpr.getLeft();
+    IntExpr right2 = (IntExpr) firstOrderOperatorBinaryExpr.getRight();
+    Assert.assrt(left.getValue() == 3);
+    Assert.assrt(right2.getValue() == 2);
   }
 
   @Test
