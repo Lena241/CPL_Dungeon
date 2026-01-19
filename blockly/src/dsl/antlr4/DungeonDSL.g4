@@ -96,6 +96,7 @@ notExpr
   : NOT notExpr
   | predicate
   | '(' condition ')'
+  | comparison
   ;
 
 predicate
@@ -105,12 +106,7 @@ predicate
   | PIT   '(' direction ')'
   | BOOLEAN
   | ID
-  | comparsion
   ;
-
-comparsion
-    : expressionRootStmt COMPARE_OPERATOR expressionRootStmt
-    | condition COMPARE_OPERATOR condition;
 
 block
   : (statement NEWLINE*)+
@@ -150,6 +146,14 @@ expressionLeafStmt
     : ID
     | INT
     | '(' expressionRootStmt ')';
+
+comparison
+    : expressionLeafStmt COMPARE_OPERATOR expressionLeafStmt
+    | comparisonPredicate  COMPARE_OPERATOR comparisonPredicate ;
+
+comparisonPredicate
+    : predicate
+    | '(' condition ')';
 
 direction
     : VORNE

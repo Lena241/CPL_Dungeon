@@ -234,6 +234,10 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     if (ctx.condition() != null) {
       return visit(ctx.condition());
     }
+    if(ctx.comparison() != null)
+    {
+      return visit(ctx.comparison());
+    }
     throw new IllegalArgumentException("Ungültiger notExpr: " + ctx.getText());
   }
 
@@ -261,6 +265,26 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     throw new IllegalArgumentException("Unbekanntes Predicate: " + ctx.getText());
 
   }
+  @Override
+  public Object visitComparison(DungeonDSLParser.ComparisonContext ctx){
+    if(!ctx.expressionLeafStmt().isEmpty()){
+      Expr left = (Expr) visit(ctx.expressionLeafStmt(0));
+      Expr right = (Expr) visit(ctx.expressionLeafStmt(1));
+      String operator = ctx.COMPARE_OPERATOR().getText();
+      return new BinaryExpr(left, right, operator);
+    } else{
+      Expr left = (Expr) visit(ctx.comparisonPredicate(0));
+      Expr right = (Expr) visit(ctx.comparisonPredicate(1));
+      String operator = ctx.COMPARE_OPERATOR().getText();
+      return new BinaryExpr(left, right, operator);
+    }
+  }
+
+  @Override
+  public Object visitComparisonPredicate(DungeonDSLParser.ComparisonPredicateContext ctx){
+    return visit(ctx.condition() != null ? ctx.condition() : ctx.predicate());
+  }
+
 
 
   private List<Stmt> buildBlock(DungeonDSLParser.BlockContext blockCtx) {
