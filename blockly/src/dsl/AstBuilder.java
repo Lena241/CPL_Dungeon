@@ -77,7 +77,7 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
 
   @Override
   public Object visitSetVariableStmt(DungeonDSLParser.SetVariableStmtContext ctx) {
-    String variableName = ctx.VAR_NAME().getText();
+    String variableName = ctx.ID().getText();
     ExpressionStmt value = (ExpressionStmt) visitExpressionRootStmt(ctx.expressionRoot());
     return new SetVariableStmt(variableName, value);
   }
@@ -116,8 +116,8 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
   }
 
   public Object visitExpressionLeafStmt(DungeonDSLParser.ExpressionLeafContext ctx) {
-    if (ctx.VAR_NAME() != null) {
-      return new ExpressionStmt(ctx.VAR_NAME().getText(), true);
+    if (ctx.ID() != null) {
+      return new ExpressionStmt(ctx.ID().getText(), true);
     }
     if (ctx.INT() != null) {
       return new ExpressionStmt(ctx.INT().getText(), false);
@@ -148,7 +148,7 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
 
   @Override
   public Object visitSwitchStmt(DungeonDSLParser.SwitchStmtContext ctx) {
-    String variableSymbol = ctx.VAR_NAME().getText();
+    String variableSymbol = ctx.ID().getText();
     List<CaseStmt> caseStmtList = new ArrayList<>();
 
     List<Stmt> defaultStatements = ctx.defaultStmt().statement().stream()
@@ -249,8 +249,7 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
 
     throw new IllegalArgumentException("Unbekanntes Predicate: " + ctx.getText());
 
-}
-
+  }
 
 
   private List<Stmt> buildBlock(DungeonDSLParser.BlockContext blockCtx) {

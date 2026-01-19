@@ -2,6 +2,10 @@ grammar DungeonDSL;
 
 options { visitor = true; }
 
+@header {
+package dsl.antlr4;
+}
+
 // ---------- Parser rules ----------
 
 program

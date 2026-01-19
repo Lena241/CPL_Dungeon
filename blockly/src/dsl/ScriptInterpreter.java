@@ -72,6 +72,7 @@ public class ScriptInterpreter implements ConditionContext {
       return;
     }
 
+    if (stmt instanceof IfStmt i) {
       boolean matched = false;
 
       for (IfBranch b : i.getBranches()) {
@@ -97,6 +98,7 @@ public class ScriptInterpreter implements ConditionContext {
           sleepIfNeeded();
         }
       }
+
 
       return;
     }
