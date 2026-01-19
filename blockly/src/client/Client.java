@@ -126,13 +126,13 @@ public class Client {
           DungeonLoader.loadLevel(0);
 
           // TEST IF-ELSE STATEMENT
-//          DslCodeRunner.instance().executeDslCode("""
-//            if aktiv(vorne):
-//            drehen(rechts)
-//            else:
-//            drehen(links)
-//            end
-//            """);
+          DslCodeRunner.instance().executeDslCode("""
+            a = true
+            while a:
+              gehen()
+              a = not wall(vorne)
+            end
+            """);
         });
   }
 

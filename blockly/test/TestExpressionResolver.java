@@ -1,6 +1,10 @@
 import com.ibm.icu.impl.Assert;
-import dsl.statements.ExpressionStmt;
-import dsl.auxiliary.ExpressionResolver;
+import dsl.auxiliary.Value;
+import dsl.auxiliary.ValueType;
+import dsl.expr.BinaryExpr;
+import dsl.expr.Expr;
+import dsl.expr.IDExpr;
+import dsl.expr.IntExpr;
 import dsl.auxiliary.SymbolTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,11 +21,11 @@ public class TestExpressionResolver {
   public void TestExpressionResolverVariable(){
     // Preparation
 
-    ExpressionStmt expressionStmt = new ExpressionStmt("a",true);
-    this.symbolTable.add("a", 11);
+    Expr expressionStmt = new IDExpr("a");
+    this.symbolTable.add("a", new Value(11, ValueType.Integer));
 
     // Test
-    Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
+    Integer result = expressionStmt.evalAsInteger(null, this.symbolTable);
 
     // Validation
     Assert.assrt(result == 11);
@@ -30,37 +34,24 @@ public class TestExpressionResolver {
   public void TestExpressionResolverInteger(){
     // Preparation
 
-    ExpressionStmt expressionStmt = new ExpressionStmt("9",false);
+    Expr expressionStmt = new IntExpr(9);
 
     // Test
-    Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
+    Integer result = expressionStmt.evalAsInteger(null, this.symbolTable);
 
     // Validation
     Assert.assrt(result == 9);
   }
   @Test
-  public void TestExpressionResolverExpression(){
-    // Preparation
-
-    ExpressionStmt expressionStmt1 = new ExpressionStmt("8",false);
-    ExpressionStmt expressionStmt = new ExpressionStmt(expressionStmt1);
-
-    // Test
-    Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
-
-    // Validation
-    Assert.assrt(result == 8);
-  }
-  @Test
   public void TestExpressionResolverAddition(){
     // Preparation
 
-    ExpressionStmt expressionStmt1 = new ExpressionStmt("3",false);
-    ExpressionStmt expressionStmt2 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt = new ExpressionStmt(expressionStmt1, expressionStmt2, "+");
+    Expr expressionStmt1 = new IntExpr(3);
+    Expr expressionStmt2 = new IntExpr(2);
+    Expr expressionStmt = new BinaryExpr(expressionStmt1, expressionStmt2, "+");
 
     // Test
-    Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
+    Integer result = expressionStmt.evalAsInteger(null, this.symbolTable);
 
     // Validation
     Assert.assrt(result == 5);
@@ -69,12 +60,12 @@ public class TestExpressionResolver {
   public void TestExpressionResolverSubtraction(){
     // Preparation
 
-    ExpressionStmt expressionStmt1 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt2 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt = new ExpressionStmt(expressionStmt1, expressionStmt2, "-");
+    Expr expressionStmt1 = new IntExpr(2);
+    Expr expressionStmt2 = new IntExpr(2);
+    Expr expressionStmt = new BinaryExpr(expressionStmt1, expressionStmt2, "-");
 
     // Test
-    Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
+    Integer result = expressionStmt.evalAsInteger(null, this.symbolTable);
 
     // Validation
     Assert.assrt(result == 0);
@@ -83,12 +74,12 @@ public class TestExpressionResolver {
   public void TestExpressionResolverMultiplication(){
     // Preparation
 
-    ExpressionStmt expressionStmt1 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt2 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt = new ExpressionStmt(expressionStmt1, expressionStmt2, "*");
+    Expr expressionStmt1 = new IntExpr(2);
+    Expr expressionStmt2 = new IntExpr(2);
+    Expr expressionStmt = new BinaryExpr(expressionStmt1, expressionStmt2, "*");
 
     // Test
-    Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
+    Integer result = expressionStmt.evalAsInteger(null, this.symbolTable);
 
     // Validation
     Assert.assrt(result == 4);
@@ -97,12 +88,12 @@ public class TestExpressionResolver {
   public void TestExpressionResolverDivision(){
     // Preparation
 
-    ExpressionStmt expressionStmt1 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt2 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt = new ExpressionStmt(expressionStmt1, expressionStmt2, "/");
+    Expr expressionStmt1 = new IntExpr(2);
+    Expr expressionStmt2 = new IntExpr(2);
+    Expr expressionStmt = new BinaryExpr(expressionStmt1, expressionStmt2, "/");
 
     // Test
-    Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
+    Integer result = expressionStmt.evalAsInteger(null, this.symbolTable);
 
     // Validation
     Assert.assrt(result == 1);
@@ -113,13 +104,13 @@ public class TestExpressionResolver {
   public void TestExpressionResolverInvalidDivision(){
     // Preparation
 
-    ExpressionStmt expressionStmt1 = new ExpressionStmt("2",false);
-    ExpressionStmt expressionStmt2 = new ExpressionStmt("0",false);
-    ExpressionStmt expressionStmt = new ExpressionStmt(expressionStmt1, expressionStmt2, "/");
+    Expr expressionStmt1 = new IntExpr(2);
+    Expr expressionStmt2 = new IntExpr(0);
+    Expr expressionStmt = new BinaryExpr(expressionStmt1, expressionStmt2, "/");
 
     // Test & Validation
     try{
-      Integer result = ExpressionResolver.ResolveExpression(expressionStmt, this.symbolTable);
+      Integer result = expressionStmt.evalAsInteger(null, this.symbolTable);
       Assert.assrt(false);
     } catch (Exception e){
       Assert.assrt(true);

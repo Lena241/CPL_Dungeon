@@ -1,8 +1,14 @@
 package dsl.expr;
 
 import dsl.ConditionContext;
+import dsl.auxiliary.SymbolTable;
+import dsl.auxiliary.Value;
+import dsl.auxiliary.ValueType;
 
-public final class NotExpr implements Expr {
+import java.util.ArrayList;
+import java.util.List;
+
+public final class NotExpr extends Expr {
   private final Expr inner;
 
   public NotExpr(Expr inner) {
@@ -14,8 +20,12 @@ public final class NotExpr implements Expr {
   }
 
   @Override
-  public boolean eval(ConditionContext ctx) {
-    return !inner.eval(ctx);
+  public Value eval(ConditionContext ctx, SymbolTable symbolTable, List<ValueType> possibleResultTypes) {
+    ValueType resultType = ValueType.Boolean;
+    if (!possibleResultTypes.contains(resultType)) {
+      throw new IllegalArgumentException("Wrong Type!");
+    }
+    return new Value(!(Boolean)inner.eval(ctx, symbolTable, new ArrayList<>(List.of(ValueType.Boolean))).getValue(), resultType);
   }
 
   @Override

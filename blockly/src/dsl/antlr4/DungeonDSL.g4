@@ -24,6 +24,7 @@ statement
     | ifStmt
     | setVariableStmt
     | switchStmt
+    | whileStmt
     ;
 
 moveStmt
@@ -70,8 +71,14 @@ whileStmt
     ;
 
 range
-   :  INT
+   : INT
+   | ID
    ;
+
+expression
+    : expressionRootStmt
+    | condition
+    ;
 
 condition
   : orExpr
@@ -97,7 +104,13 @@ predicate
   | FLOOR '(' direction ')'
   | PIT   '(' direction ')'
   | BOOLEAN
+  | ID
+  | comparsion
   ;
+
+comparsion
+    : expressionRootStmt COMPARE_OPERATOR expressionRootStmt
+    | condition COMPARE_OPERATOR condition;
 
 block
   : (statement NEWLINE*)+
@@ -117,26 +130,26 @@ defaultStmt
     : DEFAULT ':' NEWLINE+ (statement NEWLINE*)*;
 
 setVariableStmt
-    : ID '=' expressionRoot;
+    : ID '=' expression;
 
-expressionRoot
-    : expressionFirstOrder;
+expressionRootStmt
+    : expressionFirstOrderStmt;
 
-expressionFirstOrder
-    : expressionSecondOrder
-    | expressionFirstOrder FIRST_ORDER_OPERATOR expressionFirstOrder;
+expressionFirstOrderStmt
+    : expressionSecondOrderStmt
+    | expressionFirstOrderStmt FIRST_ORDER_OPERATOR expressionFirstOrderStmt;
 
 
-expressionSecondOrder
-    : expressionLeaf
-    | expressionSecondOrder SECOND_ORDER_OPERATOR expressionSecondOrder
+expressionSecondOrderStmt
+    : expressionLeafStmt
+    | expressionSecondOrderStmt SECOND_ORDER_OPERATOR expressionSecondOrderStmt
     ;
 
 
-expressionLeaf
+expressionLeafStmt
     : ID
     | INT
-    | '(' expressionRoot ')';
+    | '(' expressionRootStmt ')';
 
 direction
     : VORNE
@@ -216,7 +229,16 @@ COMMENT : '#' ~[\r\n]* -> skip;
 fragment CHAR   : [a-zA-Z];
 fragment DIGIT : [0-9] ;
 
-// --- Operators ---
+// --- Compare Operators ---
+COMPARE_OPERATOR
+    : '=='
+    | '!='
+    | '>='
+    | '<='
+    | '<'
+    | '>'
+    ;
+// --- Calculation Operators ---
 FIRST_ORDER_OPERATOR
     : '+'
     | '-';

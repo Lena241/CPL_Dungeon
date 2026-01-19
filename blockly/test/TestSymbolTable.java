@@ -1,6 +1,8 @@
 import com.ibm.icu.impl.Assert;
 import dsl.DungeonDslParserFacade;
 import dsl.auxiliary.SymbolTable;
+import dsl.auxiliary.Value;
+import dsl.auxiliary.ValueType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +20,8 @@ public class TestSymbolTable {
   public void TestSymbolTableAddAndResolveCase1(){
     // flag1 == true  and flag2 == true  and flag3 == false
     // preparation
-    Integer value = null;
-    this.symbolTable.add("a",2);
+    Value value = Value.IntegerValue(null);
+    this.symbolTable.add("a",Value.IntegerValue(2));
     // test
     this.symbolTable.add("a", value);
     // validation
@@ -28,7 +30,7 @@ public class TestSymbolTable {
   @Test
   public void TestSymbolTableAddAndResolveCase2(){
     // flag1 == true  and flag2 == false and flag3 == false
-    Integer value = null;
+    Value value = Value.IntegerValue(null);
     // test
     this.symbolTable.add("a", value);
     // validation
@@ -37,50 +39,50 @@ public class TestSymbolTable {
   @Test
   public void TestSymbolTableAddAndResolveCase3(){
     // flag1 == false and flag2 == true  and flag3 == false
-    Integer value = 1;
-    this.symbolTable.add("a",2);
+    Value value = Value.IntegerValue(1);
+    this.symbolTable.add("a",Value.IntegerValue(2));
     // test
     this.symbolTable.add("a", value);
     // validation
-    Assert.assrt(this.symbolTable.resolve("a") == 1);
-    this.symbolTable.add("a",1);
+    Assert.assrt(Value.GetInteger(this.symbolTable.resolve("a")) == 1);
+    this.symbolTable.add("a",Value.IntegerValue(1));
   }
   @Test
   public void TestSymbolTableAddAndResolveCase4(){
     // flag1 == false and flag2 == false and flag3 == false
-    Integer value = 1;
+    Value value = Value.IntegerValue(1);
     // test
     this.symbolTable.add("a", value);
     // validation
-    Assert.assrt(this.symbolTable.resolve("a") == 1);
+    Assert.assrt(Value.GetInteger(this.symbolTable.resolve("a")) == 1);
     // flag3 == true
   }
   @Test
   public void TestSymbolTableAddAndResolveCase1OwnerIsParent(){
     // flag1 == true  and flag2 == true  and flag3 == false
     // preparation
-    Integer value = null;
-    this.parentSymbolTable.add("a",2);
+    Value value = Value.IntegerValue(null);
+    this.parentSymbolTable.add("a",Value.IntegerValue(2));
     // test
     this.symbolTable.add("a", value);
     // validation
-    Assert.assrt(this.symbolTable.resolve("a") == null);
+    Assert.assrt(this.symbolTable.resolve("a")== null);
   }
   @Test
   public void TestSymbolTableAddAndResolveCase3OwnerIsParent(){
     // flag1 == false and flag2 == true  and flag3 == false
-    Integer value = 1;
-    this.parentSymbolTable.add("a",2);
+    Value value = Value.IntegerValue(1);
+    this.parentSymbolTable.add("a",Value.IntegerValue(2));
     // test
     this.symbolTable.add("a", value);
     // validation
-    Assert.assrt(this.symbolTable.resolve("a") == 1);
+    Assert.assrt(Value.GetInteger(this.symbolTable.resolve("a")) == 1);
   }
   @Test
   public void TestSymbolTableAddCase5(){
     // flag3 == true
     // Preparation
-    Integer value = 1;
+    Value value = Value.IntegerValue(1);
     // Test & Validation
     try{
       this.symbolTable.add("", value);

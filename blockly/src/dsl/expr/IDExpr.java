@@ -1,23 +1,25 @@
 package dsl.expr;
 
-import coderunner.Direction;
 import dsl.ConditionContext;
-import dsl.auxiliary.SymbolTable;
-import dsl.auxiliary.Value;
-import dsl.auxiliary.ValueType;
+import dsl.auxiliary.*;
 
 import java.util.List;
 
-public final class FloorExpr extends Expr {
-  private final Direction dir;
+public class IDExpr extends Expr {
+  private final String variableSymbol;
 
-  public FloorExpr(Direction dir) {
-    this.dir = dir;
+  public IDExpr(String variableSymbol) {
+    this.variableSymbol = variableSymbol;
+  }
+
+  public String getVariableSymbol() {
+    return this.variableSymbol;
   }
 
   @Override
   public Value eval(ConditionContext ctx, SymbolTable symbolTable, List<ValueType> possibleResultTypes) {
-    var result = new Value(ctx.isFloor(dir), ValueType.Boolean);
+
+    var result = symbolTable.resolve(this.variableSymbol);
     if (possibleResultTypes.contains(result.getType())) {
       return result;
     } else {
@@ -25,8 +27,9 @@ public final class FloorExpr extends Expr {
     }
   }
 
+
   @Override
   public String toString() {
-    return "FloorExpr(" + dir + ")";
+    return "IDExpr(" + variableSymbol + ")";
   }
 }
