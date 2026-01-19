@@ -44,14 +44,14 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     return new ShootFireballStmt();
   }
 
-  public Object visitSetVariableStmt(dsl.DungeonDSLParser.SetVariableStmtContext ctx){
+  public Object visitSetVariableStmt(DungeonDSLParser.SetVariableStmtContext ctx){
     String variable_name = ctx.VAR_NAME().getText();
     ExpressionStmt value = (ExpressionStmt) this.visitExpressionRootStmt(ctx.expressionRoot());
 
     return new SetVariableStmt(variable_name, value);
   }
 
-  public Object visitExpressionRootStmt(dsl.DungeonDSLParser.ExpressionRootContext ctx){
+  public Object visitExpressionRootStmt(DungeonDSLParser.ExpressionRootContext ctx){
 
 
     if (ctx.expressionFirstOrder() != null) {
@@ -61,11 +61,11 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     }
   }
 
-  public Object visitExpressionFirstOrderStmt(dsl.DungeonDSLParser.ExpressionFirstOrderContext ctx){
+  public Object visitExpressionFirstOrderStmt(DungeonDSLParser.ExpressionFirstOrderContext ctx){
 
 
     if (ctx.expressionFirstOrder().size() == 2) {
-      List<dsl.DungeonDSLParser.ExpressionFirstOrderContext> expressionSet = ctx.expressionFirstOrder();
+      List<DungeonDSLParser.ExpressionFirstOrderContext> expressionSet = ctx.expressionFirstOrder();
       ExpressionStmt leftInput = (ExpressionStmt) this.visitExpressionFirstOrderStmt(expressionSet.get(0));
       ExpressionStmt rightInput = (ExpressionStmt) this.visitExpressionFirstOrderStmt(expressionSet.get(1));
       return new ExpressionStmt(leftInput, rightInput, ctx.FIRST_ORDER_OPERATOR().getText());
@@ -76,11 +76,11 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     }
   }
 
-  public Object visitExpressionSecondOrderStmt(dsl.DungeonDSLParser.ExpressionSecondOrderContext ctx){
+  public Object visitExpressionSecondOrderStmt(DungeonDSLParser.ExpressionSecondOrderContext ctx){
 
 
     if (ctx.expressionSecondOrder().size() == 2) {
-      List<dsl.DungeonDSLParser.ExpressionSecondOrderContext> expressionSet = ctx.expressionSecondOrder();
+      List<DungeonDSLParser.ExpressionSecondOrderContext> expressionSet = ctx.expressionSecondOrder();
       ExpressionStmt leftInput = (ExpressionStmt) this.visitExpressionSecondOrderStmt(expressionSet.get(0));
       ExpressionStmt rightInput = (ExpressionStmt) this.visitExpressionSecondOrderStmt(expressionSet.get(1));
       return new ExpressionStmt(leftInput, rightInput, ctx.SECOND_ORDER_OPERATOR().getText());
@@ -91,7 +91,7 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
     }
   }
 
-  public Object visitExpressionLeafStmt(dsl.DungeonDSLParser.ExpressionLeafContext ctx){
+  public Object visitExpressionLeafStmt(DungeonDSLParser.ExpressionLeafContext ctx){
 
 
     if (ctx.VAR_NAME() != null) {
@@ -115,12 +115,12 @@ public class AstBuilder extends DungeonDSLBaseVisitor<Object> {
   @Override
   public Object visitRepeatStmt(DungeonDSLParser.RepeatStmtContext ctx) {
     int times = Integer.parseInt(ctx.range().INT().getText());
-    List<Stmt> body = ctx.statement().stream().map(s -> (Stmt) visit(s)).collect(Collectors.toList());
+    List<Stmt> body = ctx.block().statement().stream().map(s -> (Stmt) visit(s)).collect(Collectors.toList());
 
     return new RepeatStmt(times, body);
   }
 
-  public Object visitSwitchStmt(dsl.DungeonDSLParser.SwitchStmtContext ctx){
+  public Object visitSwitchStmt(DungeonDSLParser.SwitchStmtContext ctx){
     String variableSymbol = ctx.VAR_NAME().getText();
     List<CaseStmt> caseStmtList = new ArrayList<>();
 
