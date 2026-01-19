@@ -15,12 +15,27 @@ export function logic_operator(block: Blockly.Block, generator: Blockly.Generato
 
 export function not_condition(block: Blockly.Block, generator: Blockly.Generator) {
   const a = generator.valueToCode(block, "INPUT_A", Order.NONE) || "false";
-  return [`not ${a}`, Order.NONE];
+  return [`not (${a})`, Order.NONE];
 }
 
 export function logic_active_direction(block: Blockly.Block, generator: Blockly.Generator) {
   const dir = generator.valueToCode(block, "DIRECTION", Order.NONE) || "hier";
   return [`active(${dir})`, Order.NONE];
+}
+
+export function logic_wall_direction(block: Blockly.Block, generator: Blockly.Generator) {
+  const dir = generator.valueToCode(block, "DIRECTION", Order.NONE) || "hier";
+  return [`wall(${dir})`, Order.NONE];
+}
+
+export function logic_floor_direction(block: Blockly.Block, generator: Blockly.Generator) {
+  const dir = generator.valueToCode(block, "DIRECTION", Order.NONE) || "hier";
+  return [`floor(${dir})`, Order.NONE];
+}
+
+export function logic_pit_direction(block: Blockly.Block, generator: Blockly.Generator) {
+  const dir = generator.valueToCode(block, "DIRECTION", Order.NONE) || "hier";
+  return [`pit(${dir})`, Order.NONE];
 }
 
 export function controls_if(block: Blockly.Block, generator: Blockly.Generator) {

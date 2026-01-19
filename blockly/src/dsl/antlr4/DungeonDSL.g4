@@ -17,6 +17,7 @@ statement
     | shootFireballStmt
     | pullStmt
     | repeatStmt
+    | whileStmt
     | ifStmt
     | setVariableStmt
     | switchStmt
@@ -61,6 +62,10 @@ repeatStmt
     : REPEAT ID INRANGE LPAREN range RPAREN COLON NEWLINE+ block END
     ;
 
+whileStmt
+    : WHILE condition ':' NEWLINE+ block END
+    ;
+
 range
    :  INT
    ;
@@ -85,6 +90,10 @@ notExpr
 
 predicate
   : ACTIVE '(' direction ')'
+  | WALL  '(' direction ')'
+  | FLOOR '(' direction ')'
+  | PIT   '(' direction ')'
+  | BOOLEAN
   ;
 
 block
@@ -147,6 +156,7 @@ IF: 'if';
 ELSE: 'else';
 END: 'end';
 REPEAT  : 'for';
+WHILE : 'while';
 
 // --- Boolean logic ---
 AND: 'and';
@@ -167,6 +177,10 @@ FEUERBALL : 'feuerball';
 SCHIEBEN : 'schieben';
 ZIEHEN : 'ziehen';
 ACTIVE: 'active';
+WALL  : 'wall';
+FLOOR : 'floor';
+PIT   : 'pit';
+
 
 // --- Directions ---
 LINKS   : 'links';

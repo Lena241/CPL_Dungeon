@@ -292,6 +292,29 @@ public class BlocklyCommands {
   }
 
   /**
+   * True if the tile in the given direction is a wall.
+   */
+  public static boolean isWall(final Direction direction) {
+    return isNearTile(LevelElement.WALL, direction);
+  }
+
+  /**
+   * True iff the tile in the given direction is floor.
+   * matchesTile already treats DOOR/EXIT as FLOOR.
+   */
+  public static boolean isFloor(final Direction direction) {
+    return isNearTile(LevelElement.FLOOR, direction);
+  }
+
+  /**
+   * True if the tile in the given direction is a pit.
+   */
+  public static boolean isPit(final Direction direction) {
+    return isNearTile(LevelElement.PIT, direction);
+  }
+
+
+  /**
    * Determines whether the specified tile is in active state.
    *
    * <p>A tile in the given direction is considered active iff

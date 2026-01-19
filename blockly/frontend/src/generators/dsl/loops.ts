@@ -12,6 +12,17 @@ export function repeat(block: Blockly.Block, generator: Blockly.Generator): stri
   return `for ${repeat_var} in range(${times}):\n${body}end\n`;
 }
 
+export function while_loop(block: Blockly.Block, generator: Blockly.Generator): string {
+  const cond = (generator.valueToCode(block, "CONDITION", Order.NONE) || "false").trim();
+
+  let body = generator.statementToCode(block, "DO");
+  body = body && body.trim().length ? body : "";
+  body = body.replace(/[ \t\r\n]+$/, "") + "\n";
+
+  return `while ${cond}:\n${body}end\n`;
+}
+
+
 export function repeat_number(block: Blockly.Block, _generator: Blockly.Generator) {
   const code = String(block.getFieldValue("REPEAT_NUMBER") ?? "0");
   return [code, Order.NONE] as any;
