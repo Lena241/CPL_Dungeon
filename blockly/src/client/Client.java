@@ -1,6 +1,6 @@
 package client;
 
-import coderunner.BlocklyCodeRunner;
+import coderunner.DslCodeRunner;
 import com.sun.net.httpserver.HttpServer;
 import components.AmmunitionComponent;
 import contrib.systems.*;
@@ -83,7 +83,7 @@ public class Client {
       if (httpServer != null) {
         httpServer.stop(0);
       }
-      BlocklyCodeRunner.instance().stopCode();
+      DslCodeRunner.instance().stopCode();
     }
   }
 
@@ -124,13 +124,22 @@ public class Client {
           startServer();
 
           DungeonLoader.loadLevel(0);
+
+          // TEST IF-ELSE STATEMENT
+    //      DslCodeRunner.instance().executeDslCode("""
+   //         a = true
+   //         while a:
+   //           gehen()
+   //           a = not wall(vorne)
+   //         end
+    //        """);
         });
   }
 
   private static void onLevelLoad() {
     Game.userOnLevelLoad(
         (firstLoad) -> {
-          BlocklyCodeRunner.instance().stopCode();
+          DslCodeRunner.instance().stopCode();
           Game.system(
               BlocklyCommandExecuteSystem.class,
               s -> {
@@ -168,6 +177,7 @@ public class Client {
     Game.add(new AISystem());
     Game.add(new HealthSystem());
     Game.add(new ProjectileSystem());
+    //Game.add(new HudSystem());
     Game.add(new SpikeSystem());
     Game.add(new IdleSoundSystem());
     Game.add(new PathSystem());
@@ -240,7 +250,7 @@ public class Client {
       Server.waitDelta(); // wait for the next tick to execute the restart
       return;
     }
-    BlocklyCodeRunner.instance().stopCode();
+    DslCodeRunner.instance().stopCode();
     Game.removeAllEntities();
     Game.system(PositionSystem.class, System::stop);
     Game.system(BlocklyCommandExecuteSystem.class, s -> s.clear());
